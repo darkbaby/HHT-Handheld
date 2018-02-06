@@ -1,0 +1,412 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A6F49DA7-9157-494D-B675-33BD221D80F2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Denso_HHT</RootNamespace>
+    <AssemblyName>TheMall-Stocktaking</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>WindowsCE</PlatformFamilyName>
+    <PlatformID>E2BECB1F-8C8C-41ba-B736-9BE7D946A398</PlatformID>
+    <OSVersion>5.0</OSVersion>
+    <DeployDirSuffix>Denso-HHT</DeployDirSuffix>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <NativePlatformName>Windows CE</NativePlatformName>
+    <FormFactorID>
+    </FormFactorID>
+    <StartupObject>Denso_HHT.Program</StartupObject>
+    <ApplicationIcon>Icons8-Ios7-User-Interface-Checklist.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DNWA.BHT1300CL, Version=3.5.0.0, Culture=neutral, PublicKeyToken=c72c1c62f24aba62, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\BHT1300SDK\BHT-1300B_OS_SDK_v107\SDK\NET\v3.5\DNWA.BHT1300CL.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.CF, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\library Compact framwork\netziplib\zip-v1.9-CompactFramework\Debug\Ionic.Zip.CF.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json.Compact, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\Library Compact framwork\JSON\Bin\Compact\Newtonsoft.Json.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenNETCF, Version=2.3.12317.0, Culture=neutral, PublicKeyToken=e60dbea84bb431b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\Library Compact framwork\smart device fw\OpenNETCF\OpenNETCF\bin\Debug\OpenNETCF.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenNETCF.Net, Version=2.3.12317.0, Culture=neutral, PublicKeyToken=e60dbea84bb431b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\library Compact framwork\smart device fw\OpenNETCF.Net\OpenNETCF.Net\bin\Debug\OpenNETCF.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=3be235df1c8d2ad3, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Module\APIModule.cs" />
+    <Compile Include="Module\Enums.cs" />
+    <Compile Include="Module\FTP.cs" />
+    <Compile Include="Module\FTPException.cs" />
+    <Compile Include="Module\FTPFile.cs" />
+    <Compile Include="Module\FTPFiles.cs" />
+    <Compile Include="Module\ProcessCE.cs" />
+    <Compile Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFoodMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFoodMenu.Designer.cs">
+      <DependentUpon>ScanFreshFoodMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteMaster.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteMaster.Designer.cs">
+      <DependentUpon>DeleteMaster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteMenu.Designer.cs">
+      <DependentUpon>DeleteMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataMenu.Designer.cs">
+      <DependentUpon>SendAndReceiveDataMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataProcess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataProcess.Designer.cs">
+      <DependentUpon>SendAndReceiveDataProcess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataFTP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataFTP.Designer.cs">
+      <DependentUpon>SendDataFTP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataFTPMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataFTPMenu.Designer.cs">
+      <DependentUpon>SendDataFTPMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDepartment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDepartment.Designer.cs">
+      <DependentUpon>SettingDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingFTP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingFTP.Designer.cs">
+      <DependentUpon>SettingFTP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\DialogFTP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\DialogFTP.Designer.cs">
+      <DependentUpon>DialogFTP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Loading.Designer.cs">
+      <DependentUpon>Loading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Loading2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Loading2.Designer.cs">
+      <DependentUpon>Loading2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFood.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFood.Designer.cs">
+      <DependentUpon>ScanFreshFood.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\AddComputer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\AddComputer.Designer.cs">
+      <DependentUpon>AddComputer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\BatteryInfo.cs" />
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteAudit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\04_UI_Delete_All_Data\DeleteAudit.Designer.cs">
+      <DependentUpon>DeleteAudit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HHTToolBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HHTToolBar.Designer.cs">
+      <DependentUpon>HHTToolBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MainMenu.Designer.cs">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Module\DatabaseModule.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFoodMenu.resx">
+      <DependentUpon>ScanFreshFoodMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\04_UI_Delete_All_Data\DeleteMaster.resx">
+      <DependentUpon>DeleteMaster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\04_UI_Delete_All_Data\DeleteMenu.resx">
+      <DependentUpon>DeleteMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataMenu.resx">
+      <DependentUpon>SendAndReceiveDataMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataProcess.resx">
+      <DependentUpon>SendAndReceiveDataProcess.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendDataFTP.resx">
+      <DependentUpon>SendDataFTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendDataFTPMenu.resx">
+      <DependentUpon>SendDataFTPMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingDepartment.resx">
+      <DependentUpon>SettingDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingFTP.resx">
+      <DependentUpon>SettingFTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\DialogFTP.resx">
+      <DependentUpon>DialogFTP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Loading.resx">
+      <DependentUpon>Loading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Loading2.resx">
+      <DependentUpon>Loading2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\03_UI_Scan_Fresh_Food\ScanFreshFood.resx">
+      <DependentUpon>ScanFreshFood.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\AddComputer.resx">
+      <DependentUpon>AddComputer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\04_UI_Delete_All_Data\DeleteAudit.resx">
+      <DependentUpon>DeleteAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HHTToolBar.resx">
+      <DependentUpon>HHTToolBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MainMenu.resx">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\01_UI_Scan_Front\ScanFront.resx">
+      <DependentUpon>ScanFront.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\01_UI_Scan_Front\ScanFrontMenu.resx">
+      <DependentUpon>ScanFrontMenu.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\02_UI_Scan_Warehouse\ScanWarehouse.resx">
+      <DependentUpon>ScanWarehouse.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\02_UI_Scan_Warehouse\ScanWarehouseMenu.resx">
+      <DependentUpon>ScanWarehouseMenu.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataResult.resx">
+      <DependentUpon>SendAndReceiveDataResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\05_UI_Send_And_Receive_Data\SendDataMenu.resx">
+      <DependentUpon>SendDataMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingDateTime.resx">
+      <DependentUpon>SettingDateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingDevice.resx">
+      <DependentUpon>SettingDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingMenu.resx">
+      <DependentUpon>SettingMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\06_UI_Setting\SettingUploadComputer.resx">
+      <DependentUpon>SettingUploadComputer.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="UI\01_UI_Scan_Front\ScanFront.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\01_UI_Scan_Front\ScanFront.Designer.cs">
+      <DependentUpon>ScanFront.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\01_UI_Scan_Front\ScanFrontMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\01_UI_Scan_Front\ScanFrontMenu.Designer.cs">
+      <DependentUpon>ScanFrontMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\02_UI_Scan_Warehouse\ScanWarehouse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\02_UI_Scan_Warehouse\ScanWarehouse.Designer.cs">
+      <DependentUpon>ScanWarehouse.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\02_UI_Scan_Warehouse\ScanWarehouseMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\02_UI_Scan_Warehouse\ScanWarehouseMenu.Designer.cs">
+      <DependentUpon>ScanWarehouseMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendAndReceiveDataResult.Designer.cs">
+      <DependentUpon>SendAndReceiveDataResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\05_UI_Send_And_Receive_Data\SendDataMenu.Designer.cs">
+      <DependentUpon>SendDataMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDateTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDateTime.Designer.cs">
+      <DependentUpon>SettingDateTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDevice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingDevice.Designer.cs">
+      <DependentUpon>SettingDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingMenu.Designer.cs">
+      <DependentUpon>SettingMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingUploadComputer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\06_UI_Setting\SettingUploadComputer.Designer.cs">
+      <DependentUpon>SettingUploadComputer.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\COMPUTER_NAME.sdf">
+    </Content>
+    <Content Include="Database\STOCKTAKING_HHT.sdf">
+    </Content>
+    <Content Include="GIF\frame_0_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_10_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_11_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_1_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_2_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_3_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_4_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_5_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_6_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_7_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_8_delay-0.1s.png">
+    </Content>
+    <Content Include="GIF\frame_9_delay-0.1s.png">
+    </Content>
+    <Content Include="Icons8-Ios7-User-Interface-Checklist.ico" />
+    <None Include="TheMall-Stocktaking.lnkx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1" />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
