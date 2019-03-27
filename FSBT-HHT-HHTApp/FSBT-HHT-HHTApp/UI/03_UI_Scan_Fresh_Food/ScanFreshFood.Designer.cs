@@ -37,6 +37,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tbBarcode = new System.Windows.Forms.TextBox();
             this.ddlUnit = new System.Windows.Forms.ComboBox();
             this.tbQuantity = new System.Windows.Forms.TextBox();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -45,7 +46,7 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
             this.const7 = new System.Windows.Forms.Label();
-            this.tbBarcode = new System.Windows.Forms.TextBox();
+            this.tbBarcode_ = new System.Windows.Forms.TextBox();
             this.const4 = new System.Windows.Forms.Label();
             this.constMenu = new System.Windows.Forms.Label();
             this.const8 = new System.Windows.Forms.TextBox();
@@ -56,6 +57,8 @@
             this.lbSumRec = new System.Windows.Forms.Label();
             this.lbFunction = new System.Windows.Forms.Label();
             this.lbAlpha = new System.Windows.Forms.Label();
+            this.lbSumKG = new System.Windows.Forms.Label();
+            this.lbSumPCS = new System.Windows.Forms.Label();
             this.hhtToolBar1 = new Denso_HHT.HHTToolBar();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +66,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(223)))), ((int)(((byte)(223)))));
+            this.panel1.Controls.Add(this.tbBarcode);
             this.panel1.Controls.Add(this.ddlUnit);
             this.panel1.Controls.Add(this.tbQuantity);
             this.panel1.Controls.Add(this.btnDelete);
@@ -71,11 +75,22 @@
             this.panel1.Controls.Add(this.btnNext);
             this.panel1.Controls.Add(this.btnBack);
             this.panel1.Controls.Add(this.const7);
-            this.panel1.Controls.Add(this.tbBarcode);
+            this.panel1.Controls.Add(this.tbBarcode_);
             this.panel1.Controls.Add(this.const4);
-            this.panel1.Location = new System.Drawing.Point(2, 138);
+            this.panel1.Location = new System.Drawing.Point(1, 137);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(236, 180);
+            // 
+            // tbBarcode
+            // 
+            this.tbBarcode.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Bold);
+            this.tbBarcode.Location = new System.Drawing.Point(3, 27);
+            this.tbBarcode.Name = "tbBarcode";
+            this.tbBarcode.Size = new System.Drawing.Size(230, 31);
+            this.tbBarcode.TabIndex = 114;
+            this.tbBarcode.TextChanged += new System.EventHandler(this.tbBarcode_TextChanged);
+            this.tbBarcode.GotFocus += new System.EventHandler(this.tbBarcode_GotFocus);
+            this.tbBarcode.LostFocus += new System.EventHandler(this.tbBarcode_LostFocus);
             // 
             // ddlUnit
             // 
@@ -158,25 +173,25 @@
             this.const7.Size = new System.Drawing.Size(100, 20);
             this.const7.Text = "Qty";
             // 
-            // tbBarcode
+            // tbBarcode_
             // 
-            this.tbBarcode.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Regular);
-            this.tbBarcode.Location = new System.Drawing.Point(2, 27);
-            this.tbBarcode.MaxLength = 18;
-            this.tbBarcode.Name = "tbBarcode";
-            this.tbBarcode.Size = new System.Drawing.Size(232, 31);
-            this.tbBarcode.TabIndex = 4;
-            this.tbBarcode.TextChanged += new System.EventHandler(this.tbBarcode_TextChanged);
-            this.tbBarcode.GotFocus += new System.EventHandler(this.tbBarcode_GotFocus);
-            this.tbBarcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbBarcode_KeyPress);
-            this.tbBarcode.LostFocus += new System.EventHandler(this.tbBarcode_LostFocus);
+            this.tbBarcode_.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Regular);
+            this.tbBarcode_.Location = new System.Drawing.Point(208, 27);
+            this.tbBarcode_.MaxLength = 18;
+            this.tbBarcode_.Name = "tbBarcode_";
+            this.tbBarcode_.Size = new System.Drawing.Size(26, 31);
+            this.tbBarcode_.TabIndex = 4;
+            this.tbBarcode_.TextChanged += new System.EventHandler(this.tbBarcode_TextChanged);
+            this.tbBarcode_.GotFocus += new System.EventHandler(this.tbBarcode_GotFocus);
+            this.tbBarcode_.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbBarcode_KeyPress);
+            this.tbBarcode_.LostFocus += new System.EventHandler(this.tbBarcode_LostFocus);
             // 
             // const4
             // 
             this.const4.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.const4.Location = new System.Drawing.Point(2, 2);
             this.const4.Name = "const4";
-            this.const4.Size = new System.Drawing.Size(100, 20);
+            this.const4.Size = new System.Drawing.Size(70, 20);
             this.const4.Text = "Items";
             // 
             // constMenu
@@ -241,8 +256,8 @@
             // 
             // lbSumRec
             // 
-            this.lbSumRec.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.lbSumRec.Location = new System.Drawing.Point(80, 0);
+            this.lbSumRec.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
+            this.lbSumRec.Location = new System.Drawing.Point(75, 0);
             this.lbSumRec.Name = "lbSumRec";
             this.lbSumRec.Size = new System.Drawing.Size(125, 25);
             this.lbSumRec.Text = "REC : ";
@@ -269,6 +284,23 @@
             this.lbAlpha.Text = "Al";
             this.lbAlpha.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // lbSumKG
+            // 
+            this.lbSumKG.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lbSumKG.Location = new System.Drawing.Point(5, 42);
+            this.lbSumKG.Name = "lbSumKG";
+            this.lbSumKG.Size = new System.Drawing.Size(39, 20);
+            this.lbSumKG.Text = "KG :";
+            this.lbSumKG.Visible = false;
+            // 
+            // lbSumPCS
+            // 
+            this.lbSumPCS.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular);
+            this.lbSumPCS.Location = new System.Drawing.Point(75, 25);
+            this.lbSumPCS.Name = "lbSumPCS";
+            this.lbSumPCS.Size = new System.Drawing.Size(125, 25);
+            this.lbSumPCS.Text = "PCS :";
+            // 
             // hhtToolBar1
             // 
             this.hhtToolBar1.Location = new System.Drawing.Point(140, 0);
@@ -285,6 +317,8 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(223)))), ((int)(((byte)(223)))));
             this.ClientSize = new System.Drawing.Size(240, 320);
             this.ControlBox = false;
+            this.Controls.Add(this.lbSumKG);
+            this.Controls.Add(this.lbSumPCS);
             this.Controls.Add(this.lbAlpha);
             this.Controls.Add(this.lbFunction);
             this.Controls.Add(this.lbSumRec);
@@ -319,7 +353,7 @@
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnBack;
         private System.Windows.Forms.Label const7;
-        private System.Windows.Forms.TextBox tbBarcode;
+        private System.Windows.Forms.TextBox tbBarcode_;
         private System.Windows.Forms.Label const4;
         private System.Windows.Forms.Label constMenu;
         private HHTToolBar hhtToolBar1;
@@ -331,5 +365,8 @@
         private System.Windows.Forms.Label lbSumRec;
         private System.Windows.Forms.Label lbFunction;
         private System.Windows.Forms.Label lbAlpha;
+        private System.Windows.Forms.TextBox tbBarcode;
+        private System.Windows.Forms.Label lbSumKG;
+        private System.Windows.Forms.Label lbSumPCS;
     }
 }

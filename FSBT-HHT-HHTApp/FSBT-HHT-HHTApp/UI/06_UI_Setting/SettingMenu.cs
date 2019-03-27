@@ -84,5 +84,14 @@ namespace Denso_HHT
             SetEnableComponent(true);
             this.Show();
         }
+
+        private void btnPassword_Click(object sender, EventArgs e)
+        {
+            SetEnableComponent(false);
+            SettingPassword settingPassword = new SettingPassword();
+            settingPassword.ShowDialog();
+            SetEnableComponent(true);
+            this.Show();
+        }
     }
 }

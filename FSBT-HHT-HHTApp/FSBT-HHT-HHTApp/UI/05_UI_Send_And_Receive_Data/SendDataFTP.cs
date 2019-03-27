@@ -11,6 +11,7 @@ using Ionic.Zip;
 using System.Data;
 using System.Threading;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Denso_HHT
 {
@@ -294,12 +295,30 @@ namespace Denso_HHT
                 {
                     foreach (DataRow row in dt.Rows)
                     {
-                        sw.WriteLine(row[0].ToString() + "," + row[1].ToString() + "," + row[2].ToString() + "," +
-                            row[3].ToString() + "," + row[4].ToString() + "," + row[5].ToString() + "," +
-                            row[6].ToString() + "," + row[7].ToString() + "," + row[8].ToString() + "," +
-                            row[9].ToString() + "," + row[10].ToString() + "," +
-                            row[12].ToString() + "," + row[13].ToString() + "," + row[14].ToString() + "," +
-                            row[15].ToString());
+                        StringBuilder sb = new StringBuilder();
+                        foreach (DataColumn dc in dt.Columns)
+                        {
+                            sb = sb.Append(',' + row[dc].ToString());
+                        }
+                        string s = sb.ToString();
+                        int num = s.Length-1;
+                        sw.WriteLine(s.Substring(1, num));
+                        //sw.WriteLine(     row[0].ToString() + ","
+                        //                + row[1].ToString() + ","
+                        //                + row[2].ToString() + ","
+                        //                + row[3].ToString() + ","
+                        //                + row[4].ToString() + ","
+                        //                + row[5].ToString() + ","
+                        //                + row[6].ToString() + ","
+                        //                + row[7].ToString() + ","
+                        //                + row[8].ToString() + ","
+                        //                + row[9].ToString() + ","
+                        //                + row[10].ToString() + ","
+                        //                + row[12].ToString() + ","
+                        //                + row[13].ToString() + ","
+                        //                + row[14].ToString() + ","
+                        //                + row[15].ToString() + ","
+                        //                + row[16].ToString());
                     }
                     totalRecord = dt.Rows.Count;
                     return true;
@@ -404,10 +423,11 @@ namespace Denso_HHT
         {
             try
             {
+                CultureInfo defaulCulture = new CultureInfo("en-US");
                 startTest = DateTime.Now;
 
                 Connect();
-                ListAndDeleteErrorFile();
+                //ListAndDeleteErrorFile();
                 Disconnect();
 
                 dialog.ChangeProgressValue(10);
@@ -436,7 +456,7 @@ namespace Denso_HHT
                 dialog.ChangeProgressValue(90);
 
                 //DatabaseModule.Instance.Refresh();
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
 
                 dialog.ChangeProgressValue(100);
 

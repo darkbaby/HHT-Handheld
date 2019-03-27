@@ -44,7 +44,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(75, 230);
+            this.btnOK.Location = new System.Drawing.Point(77, 178);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 40);
             this.btnOK.TabIndex = 10;
@@ -62,7 +62,7 @@
             // 
             // tbUsername
             // 
-            this.tbUsername.Location = new System.Drawing.Point(40, 60);
+            this.tbUsername.Location = new System.Drawing.Point(40, 128);
             this.tbUsername.MaxLength = 20;
             this.tbUsername.Name = "tbUsername";
             this.tbUsername.Size = new System.Drawing.Size(160, 23);
@@ -70,7 +70,7 @@
             // 
             // const1
             // 
-            this.const1.Location = new System.Drawing.Point(0, 40);
+            this.const1.Location = new System.Drawing.Point(0, 108);
             this.const1.Name = "const1";
             this.const1.Size = new System.Drawing.Size(240, 20);
             this.const1.Text = "Username";
@@ -86,37 +86,41 @@
             // 
             // const2
             // 
-            this.const2.Location = new System.Drawing.Point(0, 100);
+            this.const2.Location = new System.Drawing.Point(0, 46);
             this.const2.Name = "const2";
             this.const2.Size = new System.Drawing.Size(240, 20);
             this.const2.Text = "Department Code";
             this.const2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.const2.Visible = false;
             // 
             // tbDepartmentCode
             // 
-            this.tbDepartmentCode.Location = new System.Drawing.Point(40, 120);
+            this.tbDepartmentCode.Location = new System.Drawing.Point(77, 20);
             this.tbDepartmentCode.MaxLength = 3;
             this.tbDepartmentCode.Name = "tbDepartmentCode";
             this.tbDepartmentCode.Size = new System.Drawing.Size(160, 23);
             this.tbDepartmentCode.TabIndex = 1;
+            this.tbDepartmentCode.Visible = false;
             this.tbDepartmentCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDepartmentCode_KeyPress);
             // 
             // radioBtnNonRealtime
             // 
             this.radioBtnNonRealtime.Checked = true;
-            this.radioBtnNonRealtime.Location = new System.Drawing.Point(65, 160);
+            this.radioBtnNonRealtime.Location = new System.Drawing.Point(90, 66);
             this.radioBtnNonRealtime.Name = "radioBtnNonRealtime";
             this.radioBtnNonRealtime.Size = new System.Drawing.Size(110, 20);
             this.radioBtnNonRealtime.TabIndex = 2;
             this.radioBtnNonRealtime.Text = "Non-Realtime";
+            this.radioBtnNonRealtime.Visible = false;
             // 
             // radioBtnRealtime
             // 
-            this.radioBtnRealtime.Location = new System.Drawing.Point(65, 190);
+            this.radioBtnRealtime.Location = new System.Drawing.Point(90, 40);
             this.radioBtnRealtime.Name = "radioBtnRealtime";
             this.radioBtnRealtime.Size = new System.Drawing.Size(110, 20);
             this.radioBtnRealtime.TabIndex = 3;
             this.radioBtnRealtime.Text = "Realtime";
+            this.radioBtnRealtime.Visible = false;
             // 
             // hhtToolBar1
             // 

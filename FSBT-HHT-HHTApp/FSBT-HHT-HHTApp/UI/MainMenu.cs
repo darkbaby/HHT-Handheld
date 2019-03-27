@@ -101,6 +101,15 @@ namespace Denso_HHT
             this.Show();
         }
 
+        private void btnProduct_Click(object sender, EventArgs e)
+        {
+            SetEnableComponent(false);
+            ScanProductMenu scanProductMenu = new ScanProductMenu();
+            scanProductMenu.ShowDialog();
+            SetEnableComponent(true);
+            this.Show();
+        }
+
         private void btnSendData_Click(object sender, EventArgs e)
         {
             SetEnableComponent(false);
@@ -207,5 +216,7 @@ namespace Denso_HHT
         public string DepartmentCode { get; set; }
         public string CreateBy { get; set; }
         public string UpdateBy { get; set; }
+        public string SerialNumber { get; set; }
+        public string ConversionCounter { get; set; }
     }
 }

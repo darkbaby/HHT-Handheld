@@ -115,7 +115,9 @@ namespace Denso_HHT.Module
                     HHTID = DatabaseModule.Instance.HHTID,
                     DepartmentCode = string.IsNullOrEmpty(item.DepartmentCode) ? DatabaseModule.Instance.currentDepartmentCode : item.DepartmentCode,
                     CreateBy = DatabaseModule.Instance.currentUser,
-                    UpdateBy = DatabaseModule.Instance.currentUser
+                    UpdateBy = DatabaseModule.Instance.currentUser,
+                    SerialNumber = item.SerialNumber,
+                    ConversionCounter = item.ConversionCounter
                 };
                 string pJson = JsonConvert.SerializeObject(s);
                 //req.ContentLength = encoding.GetBytes(pJson).Length;
@@ -133,10 +135,7 @@ namespace Denso_HHT.Module
                 {
                     throw new APIException("Server cant commit transfered-data to database, please check the server-side.");
                 }
-
                 item.SendFlag = true;
-
-
             }
             catch (APIException ex)
             {
@@ -186,7 +185,9 @@ namespace Denso_HHT.Module
                     HHTID = DatabaseModule.Instance.HHTID,
                     DepartmentCode = string.IsNullOrEmpty(item.DepartmentCode) ? DatabaseModule.Instance.currentDepartmentCode : item.DepartmentCode,
                     CreateBy = DatabaseModule.Instance.currentUser,
-                    UpdateBy = DatabaseModule.Instance.currentUser
+                    UpdateBy = DatabaseModule.Instance.currentUser,
+                    SerialNumber = item.SerialNumber,
+                    ConversionCounter = item.ConversionCounter
                 };
                 string pJson = JsonConvert.SerializeObject(s);
                 //req.ContentLength = encoding.GetBytes(pJson).Length;

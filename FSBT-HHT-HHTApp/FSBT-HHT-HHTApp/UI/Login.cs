@@ -69,16 +69,16 @@ namespace Denso_HHT
                 SetEnableComponent(true);
                 FocusOnTextBox(tbUsername);
             }
-            else if (tbDepartmentCode.Text.Trim().Equals(""))
-            {
-                MessageBox.Show("Please fill department code in the box", "Warning");
-                SetEnableComponent(true);
-                FocusOnTextBox(tbDepartmentCode);
-            }
+            //else if (tbDepartmentCode.Text.Trim().Equals(""))
+            //{
+            //    MessageBox.Show("Please fill department code in the box", "Warning");
+            //    SetEnableComponent(true);
+            //    FocusOnTextBox(tbDepartmentCode);
+            //}
             else
             {
                 DatabaseModule.Instance.QueryUpdateSetting("Username", tbUsername.Text.Trim());
-                DatabaseModule.Instance.QueryUpdateSetting("DepartmentCode", tbDepartmentCode.Text.Trim());
+                //DatabaseModule.Instance.QueryUpdateSetting("DepartmentCode", tbDepartmentCode.Text.Trim());
                 if (radioBtnRealtime.Checked)
                 {
                     Program.isNonRealtime = false;

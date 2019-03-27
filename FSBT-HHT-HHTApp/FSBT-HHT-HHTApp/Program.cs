@@ -8,6 +8,9 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using Terranova.API;
+using DNWA.BHTCL;
+using System.Globalization;
+using System.Threading;
 
 namespace Denso_HHT
 {
@@ -46,9 +49,17 @@ namespace Denso_HHT
 
         public static string LastScannedBarcodeFreshFood = "";
 
+        public static string LastScannedLocationProduct = "";
+
+        public static string LastScannedBarcodeProduct = "";
+
+        public static string LastScannedLocationProductPack = "";
+
+        public static string LastScannedBarcodeProductPack = "";
+
         [MTAThread]
         static void Main()
-        {
+        {                       
             int countProgram = 0;
             ProcessInfo[] list = ProcessCE.GetProcesses();
             foreach (ProcessInfo item in list)
@@ -84,7 +95,6 @@ namespace Denso_HHT
             {
                 Directory.Delete(appPath + @"\temp",true);
             }
-
             result = ShowWindow(hWin, SW_SHOW);
         }
     }

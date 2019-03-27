@@ -36,12 +36,13 @@
             this.hhtToolBar1 = new Denso_HHT.HHTToolBar();
             this.btnDepartment = new System.Windows.Forms.Button();
             this.btnFTP = new System.Windows.Forms.Button();
+            this.btnPassword = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnDateTime
             // 
             this.btnDateTime.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnDateTime.Location = new System.Drawing.Point(40, 85);
+            this.btnDateTime.Location = new System.Drawing.Point(40, 100);
             this.btnDateTime.Name = "btnDateTime";
             this.btnDateTime.Size = new System.Drawing.Size(160, 30);
             this.btnDateTime.TabIndex = 8;
@@ -51,7 +52,7 @@
             // btnDeviceName
             // 
             this.btnDeviceName.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnDeviceName.Location = new System.Drawing.Point(40, 40);
+            this.btnDeviceName.Location = new System.Drawing.Point(40, 60);
             this.btnDeviceName.Name = "btnDeviceName";
             this.btnDeviceName.Size = new System.Drawing.Size(160, 30);
             this.btnDeviceName.TabIndex = 7;
@@ -61,7 +62,7 @@
             // btnComputer
             // 
             this.btnComputer.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnComputer.Location = new System.Drawing.Point(40, 175);
+            this.btnComputer.Location = new System.Drawing.Point(40, 140);
             this.btnComputer.Name = "btnComputer";
             this.btnComputer.Size = new System.Drawing.Size(160, 30);
             this.btnComputer.TabIndex = 10;
@@ -97,22 +98,33 @@
             // btnDepartment
             // 
             this.btnDepartment.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnDepartment.Location = new System.Drawing.Point(40, 130);
+            this.btnDepartment.Location = new System.Drawing.Point(77, 26);
             this.btnDepartment.Name = "btnDepartment";
             this.btnDepartment.Size = new System.Drawing.Size(160, 30);
             this.btnDepartment.TabIndex = 9;
             this.btnDepartment.Text = "Department";
+            this.btnDepartment.Visible = false;
             this.btnDepartment.Click += new System.EventHandler(this.btnDepartment_Click);
             // 
             // btnFTP
             // 
             this.btnFTP.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnFTP.Location = new System.Drawing.Point(40, 220);
+            this.btnFTP.Location = new System.Drawing.Point(40, 180);
             this.btnFTP.Name = "btnFTP";
             this.btnFTP.Size = new System.Drawing.Size(160, 30);
             this.btnFTP.TabIndex = 11;
             this.btnFTP.Text = "FTP";
             this.btnFTP.Click += new System.EventHandler(this.btnFTP_Click);
+            // 
+            // btnPassword
+            // 
+            this.btnPassword.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
+            this.btnPassword.Location = new System.Drawing.Point(40, 220);
+            this.btnPassword.Name = "btnPassword";
+            this.btnPassword.Size = new System.Drawing.Size(160, 30);
+            this.btnPassword.TabIndex = 13;
+            this.btnPassword.Text = "PASSWORD";
+            this.btnPassword.Click += new System.EventHandler(this.btnPassword_Click);
             // 
             // SettingMenu
             // 
@@ -121,6 +133,7 @@
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(240, 320);
             this.ControlBox = false;
+            this.Controls.Add(this.btnPassword);
             this.Controls.Add(this.btnFTP);
             this.Controls.Add(this.btnDepartment);
             this.Controls.Add(this.constMenu);
@@ -135,7 +148,6 @@
             this.Name = "SettingMenu";
             this.Text = "Setting Menu";
             this.ResumeLayout(false);
-
         }
 
         #endregion
@@ -148,5 +160,6 @@
         private System.Windows.Forms.Label constMenu;
         private System.Windows.Forms.Button btnDepartment;
         private System.Windows.Forms.Button btnFTP;
+        private System.Windows.Forms.Button btnPassword;
     }
 }

@@ -40,85 +40,88 @@ namespace Denso_HHT
             this.labelVersion = new System.Windows.Forms.Label();
             this.constMenu = new System.Windows.Forms.Label();
             this.labelMode = new System.Windows.Forms.Label();
+            this.btnProduct = new System.Windows.Forms.Button();
             this.hhtToolBar1 = new Denso_HHT.HHTToolBar();
             this.SuspendLayout();
             // 
             // btnExit
             // 
             this.btnExit.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnExit.Location = new System.Drawing.Point(30, 260);
+            this.btnExit.Location = new System.Drawing.Point(30, 250);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(180, 30);
-            this.btnExit.TabIndex = 13;
+            this.btnExit.TabIndex = 6;
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // btnSetting
             // 
             this.btnSetting.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnSetting.Location = new System.Drawing.Point(30, 225);
+            this.btnSetting.Location = new System.Drawing.Point(30, 215);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(180, 30);
-            this.btnSetting.TabIndex = 12;
+            this.btnSetting.TabIndex = 5;
             this.btnSetting.Text = "Setting";
             this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // btnDeleteData
             // 
             this.btnDeleteData.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnDeleteData.Location = new System.Drawing.Point(30, 190);
+            this.btnDeleteData.Location = new System.Drawing.Point(30, 180);
             this.btnDeleteData.Name = "btnDeleteData";
             this.btnDeleteData.Size = new System.Drawing.Size(180, 30);
-            this.btnDeleteData.TabIndex = 11;
+            this.btnDeleteData.TabIndex = 4;
             this.btnDeleteData.Text = "Delete Data";
             this.btnDeleteData.Click += new System.EventHandler(this.btnDeleteData_Click);
             // 
             // btnSendData
             // 
             this.btnSendData.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnSendData.Location = new System.Drawing.Point(30, 135);
+            this.btnSendData.Location = new System.Drawing.Point(30, 125);
             this.btnSendData.Name = "btnSendData";
             this.btnSendData.Size = new System.Drawing.Size(180, 50);
-            this.btnSendData.TabIndex = 10;
+            this.btnSendData.TabIndex = 3;
             this.btnSendData.Text = "TEMP";
             this.btnSendData.Click += new System.EventHandler(this.btnSendData_Click);
             // 
             // btnFreshFood
             // 
             this.btnFreshFood.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnFreshFood.Location = new System.Drawing.Point(30, 100);
+            this.btnFreshFood.Location = new System.Drawing.Point(30, 90);
             this.btnFreshFood.Name = "btnFreshFood";
             this.btnFreshFood.Size = new System.Drawing.Size(180, 30);
-            this.btnFreshFood.TabIndex = 9;
+            this.btnFreshFood.TabIndex = 2;
             this.btnFreshFood.Text = "Scan Fresh Food";
             this.btnFreshFood.Click += new System.EventHandler(this.btnFreshFood_Click);
             // 
             // btnWarehouse
             // 
             this.btnWarehouse.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnWarehouse.Location = new System.Drawing.Point(30, 65);
+            this.btnWarehouse.Location = new System.Drawing.Point(30, 16);
             this.btnWarehouse.Name = "btnWarehouse";
             this.btnWarehouse.Size = new System.Drawing.Size(180, 30);
             this.btnWarehouse.TabIndex = 8;
             this.btnWarehouse.Text = "Scan Warehouse";
+            this.btnWarehouse.Visible = false;
             this.btnWarehouse.Click += new System.EventHandler(this.btnWarehouse_Click);
             // 
             // btnFront
             // 
             this.btnFront.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnFront.Location = new System.Drawing.Point(30, 30);
+            this.btnFront.Location = new System.Drawing.Point(30, 19);
             this.btnFront.Name = "btnFront";
             this.btnFront.Size = new System.Drawing.Size(180, 30);
             this.btnFront.TabIndex = 7;
             this.btnFront.Text = "Scan Front";
+            this.btnFront.Visible = false;
             this.btnFront.Click += new System.EventHandler(this.btnFront_Click);
             // 
             // labelVersion
             // 
-            this.labelVersion.Location = new System.Drawing.Point(114, 300);
+            this.labelVersion.Location = new System.Drawing.Point(104, 300);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(126, 20);
-            this.labelVersion.Text = "Stocktaking v.1.0.0";
+            this.labelVersion.Size = new System.Drawing.Size(136, 20);
+            this.labelVersion.Text = "Stocktaking v.2.0.17";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // constMenu
@@ -135,6 +138,17 @@ namespace Denso_HHT
             this.labelMode.Name = "labelMode";
             this.labelMode.Size = new System.Drawing.Size(108, 20);
             this.labelMode.Text = "Mode";
+            this.labelMode.Visible = false;
+            // 
+            // btnProduct
+            // 
+            this.btnProduct.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnProduct.Location = new System.Drawing.Point(30, 54);
+            this.btnProduct.Name = "btnProduct";
+            this.btnProduct.Size = new System.Drawing.Size(180, 30);
+            this.btnProduct.TabIndex = 1;
+            this.btnProduct.Text = "Scan Product";
+            this.btnProduct.Click += new System.EventHandler(this.btnProduct_Click);
             // 
             // hhtToolBar1
             // 
@@ -151,6 +165,7 @@ namespace Denso_HHT
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(240, 320);
             this.ControlBox = false;
+            this.Controls.Add(this.btnProduct);
             this.Controls.Add(this.labelMode);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.hhtToolBar1);
@@ -167,6 +182,7 @@ namespace Denso_HHT
             this.Text = "Main Menu";
             this.Load += new System.EventHandler(this.MainMenu_Load);
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -182,6 +198,7 @@ namespace Denso_HHT
         private HHTToolBar hhtToolBar1;
         private System.Windows.Forms.Label constMenu;
         private System.Windows.Forms.Label labelMode;
+        private System.Windows.Forms.Button btnProduct;
     }
 }
 

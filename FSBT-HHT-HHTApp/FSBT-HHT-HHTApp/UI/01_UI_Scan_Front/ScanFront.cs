@@ -212,7 +212,7 @@ namespace Denso_HHT
                 tbLocation.Text = barcode;
 
                 tempLocationModel.BrandCode = null;
-                tempLocationModel.ScanMode = 1;
+                //tempLocationModel.ScanMode = 1;
                 tempLocationModel.LocationCode = barcode;
 
                 Program.LastScannedLocationFront = barcode;
@@ -234,7 +234,7 @@ namespace Denso_HHT
                         tbLocation.Text = result.LocationCode;
 
                         tempLocationModel.BrandCode = result.BrandCode;
-                        tempLocationModel.ScanMode = result.ScanMode;
+                        //tempLocationModel.ScanMode = result.ScanMode;
                         tempLocationModel.LocationCode = result.LocationCode;
                     }
                     else
@@ -245,7 +245,7 @@ namespace Denso_HHT
                         tbLocation.Text = result.LocationCode;
 
                         tempLocationModel.BrandCode = null;
-                        tempLocationModel.ScanMode = result.ScanMode;
+                        //tempLocationModel.ScanMode = result.ScanMode;
                         tempLocationModel.LocationCode = result.LocationCode;
                     }
 
@@ -736,7 +736,7 @@ namespace Denso_HHT
                 itemData.InBarcode = tempSKUModel.InBarcode;
                 itemData.LocationCode = tempLocationModel.LocationCode;
                 itemData.Quantity = Math.Round(Convert.ToDecimal(Convert.ToDecimal(tbQuantity.Text).ToString("F3")));
-                itemData.ScanMode = tempLocationModel.ScanMode;
+                //itemData.ScanMode = tempLocationModel.ScanMode;
                 itemData.SKUCode = tempSKUModel.SKUCode;
                 itemData.UnitCode = Convert.ToInt32(ddlUnit.SelectedValue);
                 itemData.SKUMode = isHaveSKUData;
@@ -1305,53 +1305,56 @@ namespace Denso_HHT
         ScanOnly, ScanQty
     }
 
-    public class LocationModel
-    {
-        public string LocationCode { get; set; }
-        public string SectionCode { get; set; }
-        public int ScanMode { get; set; }
-        public string Section { get; set; }
-        public string BrandCode { get; set; }
-    }
+    //public class LocationModel
+    //{
+    //    public string LocationCode { get; set; }
+    //    public string SectionCode { get; set; }
+    //    public string Section { get; set; }
+    //    public string BrandCode { get; set; }
+    //}
 
-    public class SKUModel
-    {
-        public string Department { get; set; }
-        public string Barcode { get; set; }
-        public string Flag { get; set; }
-        public string SKUCode { get; set; }
-        public string BrandCode { get; set; }
-        public string ExBarcode { get; set; }
-        public string InBarcode { get; set; }
-        public string Description { get; set; }
-        public bool IsNew { get; set; }
-        public string DepartmentCode { get; set; }
-    }
+    //public class SKUModel
+    //{
+    //    public string Department { get; set; }
+    //    public string Barcode { get; set; }
+    //    public string Flag { get; set; }
+    //    public string SKUCode { get; set; }
+    //    public string BrandCode { get; set; }
+    //    public string ExBarcode { get; set; }
+    //    public string InBarcode { get; set; }
+    //    public string Description { get; set; }
+    //    public bool IsNew { get; set; }
+    //    public string DepartmentCode { get; set; }
+    //    public string SerialNumber { get; set; }
+    //    public string ConversionCounter { get; set; }
+    //}
 
-    public class UnitModel
-    {
-        public int UnitCode { get; set; }
-        public string UnitName { get; set; }
-        public string CodeType { get; set; }
-    }
+    //public class UnitModel
+    //{
+    //    public int UnitCode { get; set; }
+    //    public string UnitName { get; set; }
+    //    public string CodeType { get; set; }
+    //}
 
-    public class StockTakingModel
-    {
-        public string StocktakingID { get; set; }
-        public int ScanMode { get; set; }
-        public string LocationCode { get; set; }
-        public string Barcode { get; set; }
-        public decimal Quantity { get; set; }
-        public int UnitCode { get; set; }
-        public string Flag { get; set; }
-        public string Description { get; set; }
-        public string SKUCode { get; set; }
-        public string ExBarcode { get; set; }
-        public string InBarcode { get; set; }
-        public string BrandCode { get; set; }
-        public bool SKUMode { get; set; }
-        public string DepartmentCode { get; set; }
-        public bool SendFlag { get; set; }
-    }
+    //public class StockTakingModel
+    //{
+    //    public string StocktakingID { get; set; }
+    //    public int ScanMode { get; set; }
+    //    public string LocationCode { get; set; }
+    //    public string Barcode { get; set; }
+    //    public decimal Quantity { get; set; }
+    //    public int UnitCode { get; set; }
+    //    public string Flag { get; set; }
+    //    public string Description { get; set; }
+    //    public string SKUCode { get; set; }
+    //    public string ExBarcode { get; set; }
+    //    public string InBarcode { get; set; }
+    //    public string BrandCode { get; set; }
+    //    public bool SKUMode { get; set; }
+    //    public string DepartmentCode { get; set; }
+    //    public bool SendFlag { get; set; }
+    //    public string SerialNumber { get; set; }
+    //    public string ConversionCounter { get; set; }
+    //}
 }
 

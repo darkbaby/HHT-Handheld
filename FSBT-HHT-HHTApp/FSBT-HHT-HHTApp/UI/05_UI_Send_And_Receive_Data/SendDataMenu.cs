@@ -75,6 +75,7 @@ namespace Denso_HHT
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            DatabaseModule.Instance.Refresh();
             SetEnableComponent(false);
             this.Dispose();
         }
@@ -87,7 +88,5 @@ namespace Denso_HHT
                     break;
             }
         }
-
-
     }
 }

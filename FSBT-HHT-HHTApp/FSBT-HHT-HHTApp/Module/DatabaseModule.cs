@@ -7,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Denso_HHT.Module
 {
@@ -43,11 +44,14 @@ namespace Denso_HHT.Module
         private List<mBarcode> listBarcode;
         private List<mPack> listPack;
         private List<SummaryLocation> listSummaryLocation;
+        private List<mSerial> listSerial;
         private DataTable dtUnit;
         private DataTable dtSetting;
         private DataTable dtStocktakingFront;
         private DataTable dtStocktakingWarehouse;
         private DataTable dtStocktakingFreshFood;
+        private DataTable dtStocktakingProduct;
+        private DataTable dtStocktakingProductPack;
         private DataTable dtComputer;
 
         private DateTime currentTranDate;
@@ -60,9 +64,11 @@ namespace Denso_HHT.Module
         public string FtpServer = null;
         public string FtpUsername = null;
         public string FtpPassword = null;
+        public string Password = null;
 
         public void Init()
         {
+            CultureInfo defaulCulture = new CultureInfo("en-US");
             Connect(0);
             Connect(1);
 
@@ -77,6 +83,7 @@ namespace Denso_HHT.Module
             FtpServer = QuerySelectSetting("FTPServer");
             FtpUsername = QuerySelectSetting("FTPUsername");
             FtpPassword = QuerySelectSetting("FTPPassword");
+            Password = QuerySelectSetting("Password");
         }
 
         public void InitWithOutRefresh()
@@ -91,7 +98,7 @@ namespace Denso_HHT.Module
             SqlCeDataAdapter da = null;
 
             listLocation = new List<mLocation>();
-            cmd = new SqlCeCommand("SELECT LocationCode,SectionCode,ScanMode,SectionName,BrandCode FROM tb_m_Location", cnStock);
+            cmd = new SqlCeCommand("SELECT LocationCode,SectionCode,SectionName,BrandCode FROM tb_m_Location", cnStock);
             cmd.CommandType = CommandType.Text;
             SqlCeDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -100,9 +107,9 @@ namespace Denso_HHT.Module
                 {
                     LocationCode = reader.GetString(0),
                     SectionCode = reader.GetString(1),
-                    ScanMode = reader.GetInt32(2),
-                    //SectionName = reader.GetString(3),
-                    BrandCode = reader.GetString(4)
+                    //ScanMode = reader.GetInt32(2),
+                    SectionName = reader.GetString(2),
+                    BrandCode = reader.GetString(3)
                 });
             }
 
@@ -119,7 +126,7 @@ namespace Denso_HHT.Module
                     InBarcode = reader.IsDBNull(2) ? null : reader.GetString(2),
                     BrandCode = reader.IsDBNull(3) ? null : reader.GetString(3),
                     SKUCode = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    MKCode = reader.IsDBNull(5) ? null : reader.GetString(5)
+                    MKCode = reader.IsDBNull(5) ? null : reader.GetString(5),
                 });
             }
 
@@ -149,6 +156,22 @@ namespace Denso_HHT.Module
                 });
             }
 
+            listSerial = new List<mSerial>();
+            cmd = new SqlCeCommand("SELECT SKUCode,Barcode,SerialNumber,StorageLocation FROM tb_m_SerialNumber", cnStock);
+            cmd.CommandType = CommandType.Text;
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                listSerial.Add(new mSerial
+                {
+                    SKUCode = reader.IsDBNull(0) ? null : reader.GetString(0),
+                    BarCode = reader.IsDBNull(1) ? null : reader.GetString(1),
+                    SerialNumber = reader.IsDBNull(2) ? null : reader.GetString(2),
+                    StorageLocation = reader.IsDBNull(3) ? null : reader.GetString(3)
+                    
+                });
+            }
+
             cmd = new SqlCeCommand("SELECT * FROM tb_m_Unit ", cnStock);
             cmd.CommandType = CommandType.Text;
             da = new SqlCeDataAdapter(cmd);
@@ -173,11 +196,23 @@ namespace Denso_HHT.Module
             dtStocktakingWarehouse = new DataTable("tb_t_StocktakingWarehouse");
             da.Fill(dtStocktakingWarehouse);
 
-            cmd = new SqlCeCommand("SELECT * FROM (SELECT TOP(100) * FROM tb_t_Stocktaking WHERE ScanMode = 4 ORDER BY StocktakingID DESC) AS t1 ORDER BY StocktakingID ASC", cnStock);
+            cmd = new SqlCeCommand("SELECT * FROM (SELECT TOP(100) * FROM tb_t_Stocktaking WHERE ScanMode in (5,6,7 ) ORDER BY StocktakingID DESC) AS t1 ORDER BY StocktakingID ASC", cnStock);
             cmd.CommandType = CommandType.Text;
             da = new SqlCeDataAdapter(cmd);
             dtStocktakingFreshFood = new DataTable("tb_t_StocktakingFreshFood");
             da.Fill(dtStocktakingFreshFood);
+
+            cmd = new SqlCeCommand("SELECT * FROM (SELECT TOP(100) * FROM tb_t_Stocktaking WHERE ScanMode in (1,2 ) ORDER BY StocktakingID DESC) AS t1 ORDER BY StocktakingID ASC", cnStock);
+            cmd.CommandType = CommandType.Text;
+            da = new SqlCeDataAdapter(cmd);
+            dtStocktakingProduct = new DataTable("tb_t_StocktakingProduct");
+            da.Fill(dtStocktakingProduct);
+
+            cmd = new SqlCeCommand("SELECT * FROM (SELECT TOP(100) * FROM tb_t_Stocktaking WHERE ScanMode in (3,4 ) ORDER BY StocktakingID DESC) AS t1 ORDER BY StocktakingID ASC", cnStock);
+            cmd.CommandType = CommandType.Text;
+            da = new SqlCeDataAdapter(cmd);
+            dtStocktakingProductPack = new DataTable("tb_t_StocktakingProductPack");
+            da.Fill(dtStocktakingProductPack);
 
             cmd = new SqlCeCommand("SELECT * FROM Computer", cnComputer);
             cmd.CommandType = CommandType.Text;
@@ -317,6 +352,8 @@ namespace Denso_HHT.Module
                         FtpPassword = newValue; break;
                     case "TranDate":
                         currentTranDate = new DateTime(1990, 1, 1); break;
+                    case "Password":
+                        Password = newValue; break;
                     //case "TranCount":
                     //    currentCount = 0; break;
                 }
@@ -350,6 +387,8 @@ namespace Denso_HHT.Module
                         FtpPassword = newValue; break;
                     case "TranDate":
                         currentTranDate = DateTime.Parse(newValue); break;
+                    case "Password":
+                        Password = newValue; break;
                     //case "TranCount":
                     //    currentCount = Int32.Parse(newValue); break;
                 }
@@ -423,9 +462,13 @@ namespace Denso_HHT.Module
 
             foreach (SummaryLocation item in listSummaryLocation)
             {
-                if (item.LocationCode.Equals(locationCode) && item.UnitCode == (int)row[0])
+                if (item.LocationCode.Equals(locationCode) && item.UnitCode == (int)row[0] && unitName != "KG")
                 {
                     return new string[] { ((int)item.TotalQuantity).ToString(), ((int)item.TotalRecord).ToString() };
+                }
+                else if (item.LocationCode.Equals(locationCode) && item.UnitCode == (int)row[0] && unitName == "KG")
+                {
+                    return new string[] { ((double)item.TotalQuantity).ToString(), ((int)item.TotalRecord).ToString() };
                 }
             }
 
@@ -602,23 +645,50 @@ namespace Denso_HHT.Module
         public List<StockTakingModel> QuerySelectPreviousAuditDataFromScan(int mode)
         {
             DataTable dt = null;
-            if (mode == 1)
-            {
-                dt = dtStocktakingFront;
-            }
-            else if (mode == 2)
-            {
-                dt = dtStocktakingWarehouse;
-            }
-            else if (mode == 3)
+            if (mode == 5|| mode == 6 || mode == 7)
             {
                 dt = dtStocktakingFreshFood;
+                if (dtStocktakingFreshFood.Rows.Count > 0) 
+                {
+                    try
+                    {
+                        dt = dtStocktakingFreshFood.AsEnumerable()
+                                                .Where(row => row.Field<int>("ScanMode") == mode)
+                                                .CopyToDataTable();
+                    }
+                    catch { dt = dtStocktakingFreshFood; }
+                }
+            }
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+                try
+                {
+                    dt = dtStocktakingProduct.AsEnumerable()
+                                             .Where(row => row.Field<int>("ScanMode") == mode)
+                                             .CopyToDataTable();
+                }
+                catch { dt = dtStocktakingProduct; }
+
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
+                try
+                {
+                    dt = dtStocktakingProductPack.AsEnumerable()
+                                                 .Where(row => row.Field<int>("ScanMode") == mode)
+                                                 .CopyToDataTable();
+                }
+                catch { dt = dtStocktakingProductPack; }
+                
             }
 
             List<StockTakingModel> returnList = new List<StockTakingModel>();
             foreach (DataRow row in dt.Rows)
             {
                 StockTakingModel data = new StockTakingModel();
+
                 data.StocktakingID = row[0].ToString();
                 data.ScanMode = Int32.Parse(row[1].ToString());
                 data.LocationCode = row[2].ToString();
@@ -633,9 +703,61 @@ namespace Denso_HHT.Module
                 data.BrandCode = row[11] == DBNull.Value ? null : row[11].ToString();
                 data.SKUMode = Convert.ToBoolean(row[12]);
                 data.DepartmentCode = row[13] == DBNull.Value ? null : row[13].ToString();
+                data.SerialNumber = row[17] == DBNull.Value ? null : row[17].ToString();
+                data.ConversionCounter = row[18] == DBNull.Value ? null : row[18].ToString();
+
                 returnList.Add(data);
             }
             return returnList;
+        }
+
+        public List<SerialNumberModel> QuerySelectSerialNumberDataFromScan(string barcode)
+        {
+            //List<SerialNumberModel> returnList = returnList.FindAll(x => x.Barcode == barcode);          
+            //return returnList;
+
+            List<SerialNumberModel> Serials = new List<SerialNumberModel>();
+
+            var results = Serials.FindAll(
+            delegate(SerialNumberModel se)
+            {
+                return se.Barcode == barcode;
+            }
+            );
+
+            return results;
+        }
+
+        public bool IsHaveSerialNumber(string barcode)
+        {
+            
+            List<mSerial> Serials = listSerial;
+
+            var results = Serials.FindAll(x => x.BarCode == barcode); 
+
+            if (results.Count()>0 )
+                return true;
+            else
+                return false;
+        }
+
+        public bool IsRightSerialNumber(string barcode, string Serial)
+        {
+            List<mSerial> Serials = listSerial;
+
+            var results = Serials.FindAll(x => x.BarCode == barcode);
+            if (results.Count > 0)
+            {
+                var serials = results.FindAll(s => s.SerialNumber == Serial);
+                if (serials.Count > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         //private string QuerySection(string locationCode)
@@ -660,30 +782,32 @@ namespace Denso_HHT.Module
         public LocationModel QueryLocationFromScan(string locationBarcode, int mode)
         {
             mLocation tempLocation = null;
-            if (mode == 1)
-            {
-                tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && (x.ScanMode == 1 || x.ScanMode == 2)).FirstOrDefault();
-            }
-            else if (mode == 2)
-            {
-                tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && x.ScanMode == 3).FirstOrDefault();
-            }
-            else if (mode == 3)
-            {
-                tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && x.ScanMode == 4).FirstOrDefault();
-            }
-            else if (mode == 4)
-            {
-                tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode).FirstOrDefault();
-            }
+            //if (mode == 1)
+            //{
+            //    tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && (x.ScanMode == 1 || x.ScanMode == 2)).FirstOrDefault();
+            //}
+            //else if (mode == 2)
+            //{
+            //    tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && x.ScanMode == 3).FirstOrDefault();
+            //}
+            //else if (mode == 3)
+            //{
+            //    tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode && x.ScanMode == 4).FirstOrDefault();
+            //}
+            //else if (mode == 4)
+            //{
+            //    tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode).FirstOrDefault();
+            //}
+
+            tempLocation = listLocation.Where(x => x.LocationCode == locationBarcode).FirstOrDefault();
 
             if (tempLocation != null)
             {
                 LocationModel returnQueryLocation = new LocationModel();
                 returnQueryLocation.LocationCode = tempLocation.LocationCode; //LocationCode
                 returnQueryLocation.SectionCode = tempLocation.SectionCode; //SectionCode
-                //returnQueryLocation.SectionName = tempLocation.SectionName;//SectionName
-                returnQueryLocation.ScanMode = tempLocation.ScanMode; //ScanMode
+                returnQueryLocation.SectionName = tempLocation.SectionName;//SectionName
+                //returnQueryLocation.ScanMode = tempLocation.ScanMode; //ScanMode
                 returnQueryLocation.BrandCode = tempLocation.BrandCode; //BrandCode
                 return returnQueryLocation;
             }
@@ -698,6 +822,7 @@ namespace Denso_HHT.Module
             if (productBarcode.Length == 5)
             {
                 mSKU tempSKU = listSKU.Where(x => x.MKCode == productBarcode).FirstOrDefault();
+
                 if (tempSKU != null)
                 {
                     SKUModel returnQueryProduct = new SKUModel();
@@ -707,6 +832,8 @@ namespace Denso_HHT.Module
                     returnQueryProduct.ExBarcode = tempSKU.ExBarcode; //ExBarCode
                     returnQueryProduct.BrandCode = tempSKU.BrandCode; //BrandCode
                     returnQueryProduct.DepartmentCode = null;
+                    //returnQueryProduct.SerialNumber = null;
+                    //returnQueryProduct.ConversionCounter = null;
                     return returnQueryProduct;
                 }
                 else
@@ -726,6 +853,8 @@ namespace Denso_HHT.Module
                     returnQueryProduct.ExBarcode = tempSKU.ExBarcode; //ExBarCode
                     returnQueryProduct.BrandCode = tempSKU.BrandCode; //BrandCode
                     returnQueryProduct.DepartmentCode = null;
+                    //returnQueryProduct.SerialNumber = null;
+                    //returnQueryProduct.ConversionCounter = null;
                     return returnQueryProduct;
                 }
                 else
@@ -743,7 +872,8 @@ namespace Denso_HHT.Module
                             returnQueryProduct.InBarcode = tempSKU.InBarcode; //InBarCode
                             returnQueryProduct.ExBarcode = tempSKU.ExBarcode; //ExBarCode
                             returnQueryProduct.BrandCode = tempSKU.BrandCode; //BrandCode
-                            returnQueryProduct.DepartmentCode = null;
+                            //returnQueryProduct.DepartmentCode = null;
+                            //returnQueryProduct.SerialNumber = null;
                             return returnQueryProduct;
                         }
                         else
@@ -768,6 +898,8 @@ namespace Denso_HHT.Module
                                 returnQueryProduct.ExBarcode = tempSKU.ExBarcode; //ExBarCode
                                 returnQueryProduct.BrandCode = tempSKU.BrandCode; //BrandCode
                                 returnQueryProduct.DepartmentCode = null;
+                                //returnQueryProduct.SerialNumber = null;
+                                //returnQueryProduct.ConversionCounter = null;
                                 return returnQueryProduct;
                             }
                             else
@@ -794,6 +926,8 @@ namespace Denso_HHT.Module
                                 returnQueryProduct.ExBarcode = tempSKU.ExBarcode; //ExBarCode
                                 returnQueryProduct.BrandCode = tempSKU.BrandCode; //BrandCode
                                 returnQueryProduct.DepartmentCode = productBarcode.Substring(2, 2);
+                                //returnQueryProduct.SerialNumber = null;
+                                //returnQueryProduct.ConversionCounter = null;
                                 return returnQueryProduct;
                             }
                             else
@@ -847,6 +981,8 @@ namespace Denso_HHT.Module
                 temp.SKUMode = reader.GetBoolean(12);
                 temp.DepartmentCode = reader.IsDBNull(13) ? null : reader.GetString(13);
                 temp.SendFlag = reader.GetBoolean(14);
+                temp.SerialNumber = reader.IsDBNull(17) ? null : reader.GetString(17);
+                temp.ConversionCounter = reader.IsDBNull(18) ? null : reader.GetString(18);
                 returnList.Add(temp);
             }
 
@@ -856,17 +992,30 @@ namespace Denso_HHT.Module
         public void QueryUpdateFromScan(string uniqueID, decimal newQuantity, int newUnitCode, bool newSendFlag, int mode)
         {
             DataTable dt = null;
-            if (mode == 1)
-            {
-                dt = dtStocktakingFront;
-            }
-            else if (mode == 2)
-            {
-                dt = dtStocktakingWarehouse;
-            }
-            else if (mode == 3)
+            //if (mode == 1)
+            //{
+            //    dt = dtStocktakingFront;
+            //}
+            //else if (mode == 2)
+            //{
+            //    dt = dtStocktakingWarehouse;
+            //}
+            //else if (mode == 3)
+            //{
+            //    dt = dtStocktakingFreshFood;
+            //}
+
+            if (mode == 5 || mode == 6 || mode == 7)
             {
                 dt = dtStocktakingFreshFood;
+            }
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
             }
 
             DataRow row = dt.Select("StocktakingID = '" + uniqueID + "'").FirstOrDefault();
@@ -885,6 +1034,7 @@ namespace Denso_HHT.Module
 
         public string GetLastStocktakingID()
         {
+            CultureInfo defaulCulture = new CultureInfo("en-US");
             DateTime currentDT = DateTime.Now;
 
             if (currentDT.Date.CompareTo(currentTranDate.Date) != 0)
@@ -935,19 +1085,21 @@ namespace Denso_HHT.Module
             SqlCeDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                lastInsertedStocktaking.StocktakingID = reader.GetString(0);
-                lastInsertedStocktaking.ScanMode = reader.GetInt32(1);
-                lastInsertedStocktaking.LocationCode = reader.GetString(2);
-                lastInsertedStocktaking.Barcode = reader.GetString(3);
-                lastInsertedStocktaking.Quantity = reader.GetDecimal(4);
-                lastInsertedStocktaking.UnitCode = reader.GetInt32(5);
-                lastInsertedStocktaking.Flag = reader.GetString(6);
-                lastInsertedStocktaking.SKUCode = reader.IsDBNull(8) ? null : reader.GetString(8);
+                lastInsertedStocktaking.StocktakingID = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                lastInsertedStocktaking.ScanMode = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                lastInsertedStocktaking.LocationCode = reader.IsDBNull(2) ? "" : reader.GetString(2);
+                lastInsertedStocktaking.Barcode = reader.IsDBNull(3) ? "" : reader.GetString(3);
+                lastInsertedStocktaking.Quantity = reader.IsDBNull(4) ? 0 : reader.GetDecimal(4);
+                lastInsertedStocktaking.UnitCode = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+                lastInsertedStocktaking.Flag = reader.IsDBNull(6) ? "" : reader.GetString(6);
+                lastInsertedStocktaking.SKUCode = reader.IsDBNull(8) ? "" : reader.GetString(8);
                 lastInsertedStocktaking.ExBarcode = reader.IsDBNull(9) ? null : reader.GetString(9);
                 lastInsertedStocktaking.InBarcode = reader.IsDBNull(10) ? null : reader.GetString(10);
                 lastInsertedStocktaking.BrandCode = reader.IsDBNull(11) ? null : reader.GetString(11);
                 lastInsertedStocktaking.SKUMode = reader.GetBoolean(12);
-                lastInsertedStocktaking.SendFlag = reader.GetBoolean(14);
+                lastInsertedStocktaking.SendFlag =  reader.GetBoolean(14);
+                lastInsertedStocktaking.SerialNumber = reader.IsDBNull(17) ? null : reader.GetString(17);
+                lastInsertedStocktaking.ConversionCounter = reader.IsDBNull(18) ? null : reader.GetString(18);
                 return lastInsertedStocktaking;
             }
 
@@ -958,17 +1110,30 @@ namespace Denso_HHT.Module
             StockTakingModel data, int mode)
         {
             DataTable dt = null;
-            if (mode == 1)
-            {
-                dt = dtStocktakingFront;
-            }
-            else if (mode == 2)
-            {
-                dt = dtStocktakingWarehouse;
-            }
-            else if (mode == 3)
+            //if (mode == 1)
+            //{
+            //    dt = dtStocktakingFront;
+            //}
+            //else if (mode == 2)
+            //{
+            //    dt = dtStocktakingWarehouse;
+            //}
+            //else if (mode == 3)
+            //{
+            //    dt = dtStocktakingFreshFood;
+            //}
+
+            if (mode == 5 || mode == 6 || mode == 7)
             {
                 dt = dtStocktakingFreshFood;
+            }
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
             }
 
             if (lastInsertedStocktaking.ScanMode == data.ScanMode
@@ -981,7 +1146,9 @@ namespace Denso_HHT.Module
                 && lastInsertedStocktaking.InBarcode == data.InBarcode
                 && lastInsertedStocktaking.BrandCode == data.BrandCode
                 && lastInsertedStocktaking.SKUMode == data.SKUMode
-                && lastInsertedStocktaking.SendFlag == data.SendFlag)
+                && lastInsertedStocktaking.SendFlag == data.SendFlag
+                && lastInsertedStocktaking.SerialNumber == data.SerialNumber
+                && lastInsertedStocktaking.ConversionCounter == data.ConversionCounter)
             {
                 decimal newQuantity = lastInsertedStocktaking.Quantity + data.Quantity;
                 String query = "UPDATE tb_t_Stocktaking SET Quantity = {0} WHERE StocktakingID = {1}";
@@ -999,45 +1166,116 @@ namespace Denso_HHT.Module
             }
         }
 
+        public bool QueryUpdateLastStocktakingData(string stocktakingid, string serialNumber, string conversion, int mode)
+        {
+            DataTable dt = null;
+
+            if (mode == 5 || mode == 6 || mode == 7)
+            {
+                dt = dtStocktakingFreshFood;
+            }
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
+            }
+
+            if (!string.IsNullOrEmpty(serialNumber))
+            {
+                serialNumber = "'" + serialNumber + "'";
+            }
+            else
+            {
+                serialNumber = "null";
+            }
+
+            if (!string.IsNullOrEmpty(conversion))
+            {
+                conversion = "'" + conversion + "'";
+            }
+            else
+            {
+                conversion = "null";
+            }
+            try
+            {
+                String query = "UPDATE tb_t_Stocktaking SET SerialNumber = {0} , ConversionCounter = {1} WHERE StocktakingID = '{2}'";
+                SqlCeCommand cmdUpdate = new SqlCeCommand(string.Format(query, serialNumber, conversion, stocktakingid), cnStock);
+                cmdUpdate.CommandType = CommandType.Text;
+                cmdUpdate.ExecuteNonQuery();
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            //}
+            //else
+            //{
+                
+           // }
+        }
+
         public void QueryInsertFromScan(StockTakingModel data, int mode)
         {
             DataTable dt = null;
             StockTakingModel lastInsertedStocktaking = null;
-            if (mode == 1)
-            {
-                dt = dtStocktakingFront;
-                lastInsertedStocktaking = GetLastInsertedStocktaking();
-            }
-            else if (mode == 2)
-            {
-                dt = dtStocktakingWarehouse;
-                lastInsertedStocktaking = GetLastInsertedStocktaking();
-            }
-            else if (mode == 3)
+            //if (mode == 1)
+            //{
+            //    dt = dtStocktakingFront;
+            //    lastInsertedStocktaking = GetLastInsertedStocktaking();
+            //}
+            //else if (mode == 2)
+            //{
+            //    dt = dtStocktakingWarehouse;
+            //    lastInsertedStocktaking = GetLastInsertedStocktaking();
+            //}
+            //else if (mode == 3)
+            //{
+            //    dt = dtStocktakingFreshFood;
+            //}
+
+            if (mode == 5 || mode == 6 || mode == 7)
             {
                 dt = dtStocktakingFreshFood;
             }
-
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+                lastInsertedStocktaking = GetLastInsertedStocktaking();
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
+                lastInsertedStocktaking = GetLastInsertedStocktaking();
+            }
+            CultureInfo defaulCulture = new CultureInfo("en-US");
             DateTime currentDT = DateTime.Now;
 
             DataRow newRow = dt.NewRow();
-            newRow[0] = data.StocktakingID;
-            newRow[1] = data.ScanMode;
-            newRow[2] = data.LocationCode;
-            newRow[3] = data.Barcode;
-            newRow[4] = data.Quantity;
-            newRow[5] = data.UnitCode;
-            newRow[6] = data.Flag;
-            newRow[7] = string.IsNullOrEmpty(data.Description) ? null : data.Description;
-            newRow[8] = string.IsNullOrEmpty(data.SKUCode) ? null : data.SKUCode;
-            newRow[9] = string.IsNullOrEmpty(data.ExBarcode) ? null : data.ExBarcode;
-            newRow[10] = string.IsNullOrEmpty(data.InBarcode) ? null : data.InBarcode;
-            newRow[11] = string.IsNullOrEmpty(data.BrandCode) ? null : data.BrandCode;
+            newRow[0]  = string.IsNullOrEmpty(data.StocktakingID)       ? null : data.StocktakingID;
+            newRow[1]  = data.ScanMode;
+            newRow[2]  = string.IsNullOrEmpty(data.LocationCode)        ? null : data.LocationCode;
+            newRow[3]  = string.IsNullOrEmpty(data.Barcode)             ? null : data.Barcode;
+            newRow[4]  = data.Quantity;
+            newRow[5]  = data.UnitCode;
+            newRow[6]  = string.IsNullOrEmpty(data.Flag)                ? null : data.Flag;
+            newRow[7]  = string.IsNullOrEmpty(data.Description)         ? null : data.Description;
+            newRow[8]  = string.IsNullOrEmpty(data.SKUCode)             ? null : data.SKUCode;
+            newRow[9]  = string.IsNullOrEmpty(data.ExBarcode)           ? null : data.ExBarcode;
+            newRow[10] = string.IsNullOrEmpty(data.InBarcode)           ? null : data.InBarcode;
+            newRow[11] = string.IsNullOrEmpty(data.BrandCode)           ? null : data.BrandCode;
             newRow[12] = data.SKUMode;
-            newRow[13] = string.IsNullOrEmpty(data.DepartmentCode) ? currentDepartmentCode : data.DepartmentCode;
+            newRow[13] = string.IsNullOrEmpty(data.DepartmentCode)      ? currentDepartmentCode : data.DepartmentCode;
             newRow[14] = data.SendFlag;
             newRow[15] = currentDT;
             newRow[16] = currentUser;
+            newRow[17] = string.IsNullOrEmpty(data.SerialNumber)        ? null : data.SerialNumber;
+            newRow[18] = string.IsNullOrEmpty(data.ConversionCounter)   ? null : data.ConversionCounter;
 
             dt.Rows.Add(newRow);
             if (dt.Rows.Count == 101)
@@ -1062,16 +1300,69 @@ namespace Denso_HHT.Module
 
         private SqlCeCommand BuildStringInsertFormat(StockTakingModel data, string uniqueID, DateTime currentDT)
         {
-            string query = "INSERT INTO tb_t_Stocktaking values(@UniqueID,@ScanMode,@LocationCode,@Barcode,@Quantity,@UnitCode,@Flag,@Description,@SKUCode,@ExBarcode,@InBarcode,@BrandCode,@SKUMode,@DepartmentCode,@SendFlag,@CreateDate,@CreateBy)";
+            string query = "INSERT INTO tb_t_Stocktaking (StocktakingID,ScanMode,LocationCode,Barcode,Quantity,UnitCode,Flag,Description,SKUCode,ExBarcode,InBarcode,BrandCode,SKUMode,DepartmentCode,SendFlag,CreateDate,CreateBy,SerialNumber,ConversionCounter) "
+                            + "values(@UniqueID,@ScanMode,@LocationCode,@Barcode,@Quantity,@UnitCode,@Flag,@Description,@SKUCode,@ExBarcode,@InBarcode,@BrandCode,@SKUMode,@DepartmentCode,@SendFlag,@CreateDate,@CreateBy,@SerialNumber,@ConversionCounter)";
 
             SqlCeCommand cmd = new SqlCeCommand(query, cnStock);
-            cmd.Parameters.AddWithValue("@UniqueID", uniqueID);
-            cmd.Parameters.AddWithValue("@ScanMode", data.ScanMode);
-            cmd.Parameters.AddWithValue("@LocationCode", data.LocationCode);
-            cmd.Parameters.AddWithValue("@Barcode", data.Barcode);
-            cmd.Parameters.AddWithValue("@Quantity", data.Quantity);
-            cmd.Parameters.AddWithValue("@UnitCode", data.UnitCode);
-            cmd.Parameters.AddWithValue("@Flag", data.Flag);
+
+            if (string.IsNullOrEmpty(uniqueID))
+            {
+                cmd.Parameters.AddWithValue("@UniqueID", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@UniqueID", uniqueID);
+            }
+
+            if (string.IsNullOrEmpty(data.ScanMode.ToString()))
+            {
+                cmd.Parameters.AddWithValue("@ScanMode", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@ScanMode", data.ScanMode);
+            }
+            if (string.IsNullOrEmpty(data.LocationCode))
+            {
+                cmd.Parameters.AddWithValue("@LocationCode", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@LocationCode", data.LocationCode);
+            }
+            if (string.IsNullOrEmpty(data.Barcode))
+            {
+                cmd.Parameters.AddWithValue("@Barcode", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@Barcode", data.Barcode);
+            }
+            if (string.IsNullOrEmpty(data.Quantity.ToString()))
+            {
+                cmd.Parameters.AddWithValue("@Quantity", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@Quantity", data.Quantity);
+            }
+            if (string.IsNullOrEmpty(data.UnitCode.ToString()))
+            {
+                cmd.Parameters.AddWithValue("@UnitCode", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@UnitCode", data.UnitCode);
+            }
+            if (string.IsNullOrEmpty(data.Flag))
+            {
+                cmd.Parameters.AddWithValue("@Flag", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@Flag", data.Flag); 
+            }            
+            
             if (string.IsNullOrEmpty(data.Description))
             {
                 cmd.Parameters.AddWithValue("@Description", DBNull.Value);
@@ -1115,6 +1406,7 @@ namespace Denso_HHT.Module
             cmd.Parameters.AddWithValue("@SKUMode", data.SKUMode);
             cmd.Parameters.AddWithValue("@CreateDate", currentDT);
             cmd.Parameters.AddWithValue("@CreateBy", currentUser);
+
             if (string.IsNullOrEmpty(data.DepartmentCode))
             {
                 cmd.Parameters.AddWithValue("@DepartmentCode", currentDepartmentCode);
@@ -1123,25 +1415,55 @@ namespace Denso_HHT.Module
             {
                 cmd.Parameters.AddWithValue("@DepartmentCode", data.DepartmentCode);
             }
+
             cmd.Parameters.AddWithValue("@SendFlag", data.SendFlag);
 
+            if (string.IsNullOrEmpty(data.SerialNumber))
+            {
+                cmd.Parameters.AddWithValue("@SerialNumber", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@SerialNumber", data.SerialNumber);
+            }
+            if (string.IsNullOrEmpty(data.ConversionCounter))
+            {
+                cmd.Parameters.AddWithValue("@ConversionCounter", DBNull.Value);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@ConversionCounter", data.ConversionCounter);
+            }
             return cmd;
         }
 
         public void QueryDeleteFromScan(string uniqueID, int mode)
         {
             DataTable dt = null;
-            if (mode == 1)
-            {
-                dt = dtStocktakingFront;
-            }
-            else if (mode == 2)
-            {
-                dt = dtStocktakingWarehouse;
-            }
-            else if (mode == 3)
+            //if (mode == 1)
+            //{
+            //    dt = dtStocktakingFront;
+            //}
+            //else if (mode == 2)
+            //{
+            //    dt = dtStocktakingWarehouse;
+            //}
+            //else if (mode == 3)
+            //{
+            //    dt = dtStocktakingFreshFood;
+            //}
+
+            if (mode == 5 || mode == 6 || mode == 7)
             {
                 dt = dtStocktakingFreshFood;
+            }
+            else if (mode == 1 || mode == 2)
+            {
+                dt = dtStocktakingProduct;
+            }
+            else if (mode == 3 || mode == 4)
+            {
+                dt = dtStocktakingProductPack;
             }
 
             DataRow row = dt.Select("StocktakingID = '" + uniqueID + "'").First();
@@ -1163,7 +1485,7 @@ namespace Denso_HHT.Module
         {
             if (mode == SendFTPMode.All)
             {
-                string query = "SELECT StocktakingID,ScanMode,LocationCode,Barcode,Quantity,UnitCode,Flag,Description,SKUCode,ExBarcode,InBarcode,BrandCode,SKUMode,CreateDate,CreateBy,DepartmentCode FROM tb_t_Stocktaking WHERE LocationCode = '{0}'";
+                string query = "SELECT StocktakingID,ScanMode,LocationCode,Barcode,Quantity,UnitCode,Flag,Description,SKUCode,ExBarcode,InBarcode,BrandCode,SKUMode,CreateDate,CreateBy,SerialNumber,ConversionCounter FROM tb_t_Stocktaking WHERE LocationCode = '{0}'";
                 DataTable dt = new DataTable("tb_t_Stocktaking");
                 foreach (string item in LocationCode)
                 {
@@ -1177,7 +1499,7 @@ namespace Denso_HHT.Module
             }
             else
             {
-                string query = "SELECT StocktakingID,ScanMode,LocationCode,Barcode,Quantity,UnitCode,Flag,Description,SKUCode,ExBarcode,InBarcode,BrandCode,SKUMode,CreateDate,CreateBy,DepartmentCode FROM tb_t_Stocktaking WHERE LocationCode = '{0}' AND SendFlag = 0";
+                string query = "SELECT StocktakingID,ScanMode,LocationCode,Barcode,Quantity,UnitCode,Flag,Description,SKUCode,ExBarcode,InBarcode,BrandCode,SKUMode,CreateDate,CreateBy,SerialNumber,ConversionCounter FROM tb_t_Stocktaking WHERE LocationCode = '{0}' AND SendFlag = 0";
                 DataTable dt = new DataTable("tb_t_Stocktaking");
                 foreach (string item in LocationCode)
                 {
@@ -1318,6 +1640,9 @@ namespace Denso_HHT.Module
                     cmd1 = new SqlCeCommand("DELETE FROM tb_m_Pack WHERE 1=1", cnStock);
                     cmd1.CommandType = CommandType.Text;
                     cmd1.ExecuteNonQuery();
+                    cmd1 = new SqlCeCommand("DELETE FROM tb_m_SerialNumber WHERE 1=1", cnStock);
+                    cmd1.CommandType = CommandType.Text;
+                    cmd1.ExecuteNonQuery();
                     break;
                 default:
                     break;
@@ -1429,8 +1754,8 @@ namespace Denso_HHT.Module
     {
         public string LocationCode { get; set; }
         public string SectionCode { get; set; }
-        public int ScanMode { get; set; }
-        //public string SectionName { get; set; }
+        //public int ScanMode { get; set; }
+        public string SectionName { get; set; }
         public string BrandCode { get; set; }
     }
 
@@ -1462,5 +1787,13 @@ namespace Denso_HHT.Module
         public int UnitCode { get; set; }
         public decimal TotalQuantity { get; set; }
         public int TotalRecord { get; set; }
+    }
+
+    class mSerial
+    {
+        public string SKUCode { get; set; }
+        public string BarCode { get; set; }
+        public string SerialNumber { get; set; }
+        public string StorageLocation { get; set; }
     }
 }

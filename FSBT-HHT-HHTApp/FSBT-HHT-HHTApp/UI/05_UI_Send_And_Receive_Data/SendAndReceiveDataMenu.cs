@@ -53,20 +53,48 @@ namespace Denso_HHT
 
         private void btnAll_Click(object sender, EventArgs e)
         {
+            //if (mode == SendDataMode.Offline)
+            //{
+            //    SetEnableComponent(false);
+            //    SendAndReceiveDataProcess sendData = new SendAndReceiveDataProcess(mode, SendFTPMode.All);
+            //    sendData.ShowDialog();
+            //    SetEnableComponent(true);
+            //    this.Show();
+            //}
+            //else
+            //{
+            //    SetEnableComponent(false);
+            //    SendDataFTP d = new SendDataFTP(SendFTPMode.All);
+            //    d.ShowDialog();
+            //    SetEnableComponent(true);
+            //    this.Show();
+            //}
+
             SetEnableComponent(false);
-            SendAndReceiveDataProcess sendData = new SendAndReceiveDataProcess(mode, SendFTPMode.All);
-            sendData.ShowDialog();
+            SendDataPassword sendPass = new SendDataPassword(mode);
+            sendPass.ShowDialog();
             SetEnableComponent(true);
             this.Show();
         }
 
         private void btnOnlyNew_Click(object sender, EventArgs e)
         {
-            SetEnableComponent(false);
-            SendAndReceiveDataProcess sendData = new SendAndReceiveDataProcess(mode, SendFTPMode.OnlyNew);
-            sendData.ShowDialog();
-            SetEnableComponent(true);
-            this.Show();
+            if (mode == SendDataMode.Offline)
+            {
+                SetEnableComponent(false);
+                SendAndReceiveDataProcess sendData = new SendAndReceiveDataProcess(mode, SendFTPMode.OnlyNew);
+                sendData.ShowDialog();
+                SetEnableComponent(true);
+                this.Show();
+            }
+            else
+            {
+                SetEnableComponent(false);
+                SendDataFTP d = new SendDataFTP(SendFTPMode.OnlyNew);
+                d.ShowDialog();
+                SetEnableComponent(true);
+                this.Show();
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)

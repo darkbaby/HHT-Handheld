@@ -118,6 +118,7 @@ namespace Denso_HHT
                 //lbRecord.Text = "";
                 SetEnableComponent(true);
                 btnDelete.Enabled = false;
+                panel1.Controls.Clear(); 
             }
         }
 

@@ -40,7 +40,7 @@ namespace Denso_HHT
             // btnSyncCable
             // 
             this.btnSyncCable.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnSyncCable.Location = new System.Drawing.Point(40, 210);
+            this.btnSyncCable.Location = new System.Drawing.Point(40, 169);
             this.btnSyncCable.Name = "btnSyncCable";
             this.btnSyncCable.Size = new System.Drawing.Size(160, 40);
             this.btnSyncCable.TabIndex = 7;
@@ -55,6 +55,7 @@ namespace Denso_HHT
             this.btnSendWifi.Size = new System.Drawing.Size(160, 40);
             this.btnSendWifi.TabIndex = 5;
             this.btnSendWifi.Text = "Send (WIFI)";
+            this.btnSendWifi.Visible = false;
             this.btnSendWifi.Click += new System.EventHandler(this.btnSendWifi_Click);
             // 
             // hhtToolBar1
@@ -86,7 +87,7 @@ namespace Denso_HHT
             // btnSyncWifi
             // 
             this.btnSyncWifi.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnSyncWifi.Location = new System.Drawing.Point(40, 130);
+            this.btnSyncWifi.Location = new System.Drawing.Point(40, 89);
             this.btnSyncWifi.Name = "btnSyncWifi";
             this.btnSyncWifi.Size = new System.Drawing.Size(160, 40);
             this.btnSyncWifi.TabIndex = 6;

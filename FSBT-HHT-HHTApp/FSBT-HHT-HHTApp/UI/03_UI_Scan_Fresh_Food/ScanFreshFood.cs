@@ -22,6 +22,8 @@ namespace Denso_HHT
         private bool isHaveSKUData = false;
 
         private int tempSumRec = 0;
+        private int tempSumPCS = 0;
+        private double tempSumKG = 0;
 
         private string currentLocation = "";
         private string currentBrand = null;
@@ -47,7 +49,7 @@ namespace Denso_HHT
 
         private void SetupUI()
         {
-            scannedItemData = DatabaseModule.Instance.QuerySelectPreviousAuditDataFromScan(3);
+            scannedItemData = DatabaseModule.Instance.QuerySelectPreviousAuditDataFromScan((int)(this.scanFreshFoodMode));
             currentCursor = scannedItemData.Count + 1;
             isHaveLocationData = DatabaseModule.Instance.QuerySelectHaveLocationFromScan();
             isHaveSKUData = DatabaseModule.Instance.QuerySelectHaveSKUMasterFromScan();
@@ -73,14 +75,14 @@ namespace Denso_HHT
                 lbAlpha.Visible = false;
             }
 
-            if (!Program.LastScannedLocationFreshFood.Equals(""))
-            {
-                ScanLocation(Program.LastScannedLocationFreshFood);
-                if (scanFreshFoodMode != ScanFreshFoodMode.ScanWeight)
-                {
-                    tbBarcode.Text = Program.LastScannedBarcodeFreshFood;
-                }
-            }
+            //if (!Program.LastScannedLocationFreshFood.Equals(""))
+            //{
+            //    ScanLocation(Program.LastScannedLocationFreshFood);
+            //    if (scanFreshFoodMode != ScanFreshFoodMode.ScanWeight)
+            //    {
+            //        tbBarcode.Text = Program.LastScannedBarcodeFreshFood;
+            //    }
+            //}
 
             btnNext.Text = "Save";
             btnDelete.Enabled = false;
@@ -89,9 +91,6 @@ namespace Denso_HHT
                 case ScanFreshFoodMode.ScanOnly:
                     const8.Text += "Scan Only";
                     tbBarcode.MaxLength = 14;
-                    //const7.Visible = false;
-                    //tbQuantity.Visible = false;
-                    //ddlUnit.Visible = false;
                     tbQuantity.Text = "1";
                     tbQuantity.Enabled = false;
                     tbQuantity.BackColor = Color.FromArgb(223, 223, 223);
@@ -119,6 +118,7 @@ namespace Denso_HHT
                     ddlUnit.SelectedIndex = 1;
                     ddlUnit.Visible = false;
                     hhtToolBar1.BackColor = Color.FromArgb(223, 223, 223);
+                    lbSumPCS.Visible = true;
                     break;
                 default:
                     break;
@@ -176,6 +176,7 @@ namespace Denso_HHT
                 {
                     MessageBox.Show("Invalid Location Code", "Warning", MessageBoxButtons.OK,
                         MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    tbLocation.Text = "";
                 }
                 else
                 {
@@ -192,10 +193,10 @@ namespace Denso_HHT
                         firstQty++;
                         tbQuantity.Text = firstQty.ToString();
                     }
-                    else if (!tbBarcode.Text.Equals(""))
-                    {
-                        btnNext_Click(null, null);
-                    }
+                    //else if (!tbBarcode.Text.Equals(""))
+                    //{
+                    //    btnNext_Click(null, null);
+                    //}
 
                     if (barcode.Length > 14)
                     {
@@ -207,21 +208,22 @@ namespace Denso_HHT
                     {
                         tbBarcode.Text = barcode;
                         Program.LastScannedBarcodeFreshFood = barcode;
+                        btnNext_ClickAction();
                     }
                 }
                 else if (scanFreshFoodMode == ScanFreshFoodMode.ScanWeight)
                 {
-                    if (tbBarcode.Text.Length == 5)
-                    {
-                        btnNext_ClickAction();
-                    }
-
                     if (barcode.Length != 18)
                     {
                         tbQuantity.Text = "";
                         tbQuantity.Enabled = true;
                         tbQuantity.BackColor = Color.FromArgb(255, 255, 255);
                         tbBarcode.Text = barcode;
+                        ddlUnit.SelectedIndex = 0;
+
+                        //MessageBox.Show("Invalid Barcode", "Error", MessageBoxButtons.OK,
+                        //MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
+                        //tbBarcode.Text = "";
                     }
                     else
                     {
@@ -232,6 +234,11 @@ namespace Denso_HHT
                         tbQuantity.Text = Int32.Parse(beforePoint).ToString() + "." + afterPoint;
                         tbQuantity.Enabled = false;
                         tbQuantity.BackColor = Color.FromArgb(223, 223, 223);
+                    }
+
+                    if (tbBarcode.Text.Length == 5)
+                    {
+                        btnNext_ClickAction();
                     }
                 }
                 else
@@ -252,7 +259,8 @@ namespace Denso_HHT
 
             if (!scanner.PortOpen)
             {
-                scanner.PortOpen = true;
+                try { this.scanner.PortOpen = true; }
+                catch { }
             }
 
             FocusOnSuitableTextBox();
@@ -270,11 +278,12 @@ namespace Denso_HHT
                 tbLocation.Text = barcode;
 
                 tempLocationModel.BrandCode = null;
-                tempLocationModel.ScanMode = 4;
+                //tempLocationModel.ScanMode = (int)(this.scanFreshFoodMode);
                 tempLocationModel.LocationCode = barcode;
 
                 Program.LastScannedLocationFreshFood = barcode;
             }
+
             else
             {
                 Loading2.OpenLoading();
@@ -292,7 +301,7 @@ namespace Denso_HHT
                         tbLocation.Text = result.LocationCode;
 
                         tempLocationModel.BrandCode = result.BrandCode;
-                        tempLocationModel.ScanMode = result.ScanMode;
+                        //tempLocationModel.ScanMode = result.ScanMode;
                         tempLocationModel.LocationCode = result.LocationCode;
                     }
                     else
@@ -303,25 +312,28 @@ namespace Denso_HHT
                         tbLocation.Text = result.LocationCode;
 
                         tempLocationModel.BrandCode = null;
-                        tempLocationModel.ScanMode = result.ScanMode;
+                        //tempLocationModel.ScanMode = result.ScanMode;
                         tempLocationModel.LocationCode = result.LocationCode;
                     }
-
                     Program.LastScannedLocationFreshFood = barcode;
+                    Loading2.CloseLoading();
                 }
                 else
                 {
+                    tbLocation.Text = barcode;
                     result = DatabaseModule.Instance.QueryLocationFromScan(barcode, 4);
                     if (result != null)
                     {
                         Loading2.CloseLoading();
                         MessageBox.Show("Location code not found", "Warning", MessageBoxButtons.OK,
                             MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        tbLocation.Text = "";
                     }
                     else
                     {
                         Loading2.CloseLoading();
                         MessageBox.Show("Your HHT can not audit this location code", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        tbLocation.Text = "";
                     }
                 }
             }
@@ -391,6 +403,8 @@ namespace Denso_HHT
             if (string.IsNullOrEmpty(tbLocation.Text))
             {
                 lbSumRec.Text = "REC : ";
+                lbSumPCS.Text = "PCS : ";
+                lbSumKG.Text = "KG : ";
             }
             else
             {
@@ -402,20 +416,53 @@ namespace Denso_HHT
                 string[] sumPCS = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "PCS");
                 string[] sumPCK = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "PCK");
                 string[] sumKG = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "KG");
+
                 tempSumRec = Int32.Parse(sumPCS[1]) + Int32.Parse(sumPCK[1]) + Int32.Parse(sumKG[1]);
+                tempSumPCS = Int32.Parse(sumPCS[0]);
+                tempSumKG = Double.Parse(sumKG[0]);
 
                 try
                 {
                     if (!tbBarcode.Text.Equals("") && currentCursor == scannedItemData.Count + 1)
                     {
-                        if (tempSumRec + 1 > 99999)
+                        int tempCal;
+                        double tempKGCal;
+
+                        switch (ddlUnit.Text)
                         {
-                            lbSumRec.Text = "REC : " + (((tempSumRec + 1) / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                            //lbSumRec.Text = "REC : 99,999+";
+                            case "PCS":
+                                tempCal = tempSumPCS;// +Int32.Parse(tbQuantity.Text);
+
+                                if (tempCal > 99999)
+                                {
+                                    lbSumPCS.Text = "PCS : " + ((tempCal / 1000).ToString() + "k").PadLeft(5, ' ');
+                                }
+                                else
+                                {
+                                    lbSumPCS.Text = string.Format("PCS : {0}", (tempCal).ToString("N0")).PadLeft(5, ' ');
+                                }
+                                break;
+
+                            case "KG":
+                                tempKGCal = tempSumKG;// +Double.Parse(tbQuantity.Text);
+                                if (tempSumKG > 99999)
+                                {
+                                    lbSumKG.Text = "KG : " + ((tempKGCal / 1000).ToString() + "k").PadLeft(5, ' ');
+                                }
+                                else
+                                {
+                                    lbSumKG.Text = string.Format("KG : {0}", tempKGCal.ToString("N3")).PadLeft(5, ' ');
+                                }
+                                break;
+                        }
+                        
+                        if (tempSumRec > 99999)
+                        {
+                            lbSumRec.Text = "REC : " + (((tempSumRec) / 1000).ToString() + "k").PadLeft(5, ' ');                            
                         }
                         else
                         {
-                            lbSumRec.Text = string.Format("REC : {0}", (tempSumRec + 1).ToString("N0").PadLeft(5, ' '));
+                            lbSumRec.Text = string.Format("REC : {0}", (tempSumRec).ToString("N0")).PadLeft(5, ' ');
                         }
                     }
                     else
@@ -423,11 +470,28 @@ namespace Denso_HHT
                         if (tempSumRec > 99999)
                         {
                             lbSumRec.Text = "REC : " + ((tempSumRec / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                            //lbSumRec.Text = "REC : 99,999+";
                         }
                         else
                         {
-                            lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0").PadLeft(5, ' '));
+                            lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0")).PadLeft(5, ' ');
+                        }
+
+                        if (tempSumPCS > 99999)
+                        {
+                            lbSumPCS.Text = "PCS : " + ((tempSumPCS / 1000).ToString() + "k").PadLeft(5, ' ');
+                        }
+                        else
+                        {
+                            lbSumPCS.Text = string.Format("PCS : {0}", tempSumPCS.ToString("N0")).PadLeft(5, ' ');
+                        }
+
+                        if (tempSumKG > 99999)
+                        {
+                            lbSumKG.Text = "KG : " + ((tempSumKG / 1000).ToString() + "k").PadLeft(5, ' ');
+                        }
+                        else
+                        {
+                            lbSumKG.Text = string.Format("KG : {0}", tempSumKG.ToString("N3")).PadLeft(5, ' ');
                         }
                     }
                 }
@@ -436,11 +500,28 @@ namespace Denso_HHT
                     if (tempSumRec > 99999)
                     {
                         lbSumRec.Text = "REC : " + ((tempSumRec / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                        //lbSumRec.Text = "REC : 99,999+";
                     }
                     else
                     {
-                        lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0").PadLeft(5, ' '));
+                        lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0")).PadLeft(5, ' ');
+                    }
+
+                    if (tempSumPCS > 99999)
+                    {
+                        lbSumPCS.Text = "PCS : " + ((tempSumPCS / 1000).ToString() + "k").PadLeft(5, ' ');
+                    }
+                    else
+                    {
+                        lbSumPCS.Text = string.Format("PCS : {0}", tempSumPCS.ToString("N0")).PadLeft(5, ' ');
+                    }
+
+                    if (tempSumKG > 99999)
+                    {
+                        lbSumKG.Text = "KG : " + ((tempSumKG / 1000).ToString() + "k").PadLeft(5, ' ');
+                    }
+                    else
+                    {
+                        lbSumKG.Text = string.Format("KG : {0}", tempSumKG.ToString("N3")).PadLeft(5, ' ');
                     }
                 }
             }
@@ -452,6 +533,8 @@ namespace Denso_HHT
             if (string.IsNullOrEmpty(tbLocation.Text))
             {
                 lbSumRec.Text = "REC : ";
+                lbSumPCS.Text = "PCS : ";
+                lbSumKG.Text = "KG : ";
             }
             else
             {
@@ -465,20 +548,53 @@ namespace Denso_HHT
                 string[] sumPCS = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "PCS");
                 string[] sumPCK = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "PCK");
                 string[] sumKG = DatabaseModule.Instance.QuerySelectTotalByLocationFromScan(tbLocation.Text, "KG");
+
                 tempSumRec = Int32.Parse(sumPCS[1]) + Int32.Parse(sumPCK[1]) + Int32.Parse(sumKG[1]);
+                tempSumPCS = Int32.Parse(sumPCS[0]);
+                tempSumKG = Double.Parse(sumKG[0]);
 
                 try
                 {
                     if (!tbBarcode.Text.Equals("") && currentCursor == scannedItemData.Count + 1)
                     {
-                        if (tempSumRec + 1 > 99999)
+                        int tempCal;
+                        double tempKGCal;
+
+                        switch (ddlUnit.Text)
                         {
-                            lbSumRec.Text = "REC : " + (((tempSumRec+1) / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                            //lbSumRec.Text = "REC : 99,999+";
+                            case "PCS":
+                                tempCal = tempSumPCS;// +Int32.Parse(tbQuantity.Text);
+                                if (tempCal > 99999)
+                                {
+                                    lbSumPCS.Text = "PCS : " + ((tempCal / 1000).ToString() + "k").PadLeft(5, ' ');
+                                }
+                                else
+                                {
+                                    lbSumPCS.Text = string.Format("PCS : {0}", (tempCal).ToString("N0")).PadLeft(5, ' ');
+                                }
+                                break;
+
+                            case "KG":
+
+                                tempKGCal = tempSumKG;// +Double.Parse(tbQuantity.Text);
+                                if (tempSumKG > 99999)
+                                {
+                                    lbSumKG.Text = "KG : " + ((tempKGCal / 1000).ToString() + "k").PadLeft(5, ' ');
+                                }
+                                else
+                                {
+                                    lbSumKG.Text = string.Format("KG : {0}", tempKGCal.ToString("N3")).PadLeft(5, ' ');
+                                }
+                                break;
+                        }
+
+                        if (tempSumRec > 99999)
+                        {
+                            lbSumRec.Text = "REC : " + ((tempSumRec / 1000).ToString() + "k").PadLeft(5, ' ');
                         }
                         else
                         {
-                            lbSumRec.Text = string.Format("REC : {0}", (tempSumRec + 1).ToString("N0").PadLeft(5, ' '));
+                            lbSumRec.Text = string.Format("REC : {0}", (tempSumRec).ToString("N0")).PadLeft(5, ' ');
                         }
                     }
                     else
@@ -486,11 +602,28 @@ namespace Denso_HHT
                         if (tempSumRec > 99999)
                         {
                             lbSumRec.Text = "REC : " + ((tempSumRec / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                            //lbSumRec.Text = "REC : 99,999+";
                         }
                         else
                         {
-                            lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0").PadLeft(5, ' '));
+                            lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0")).PadLeft(5, ' ');
+                        }
+
+                        if (tempSumPCS > 99999)
+                        {
+                            lbSumPCS.Text = "PCS : " + ((tempSumPCS / 1000).ToString() + "k").PadLeft(5, ' ');
+                        }
+                        else
+                        {
+                            lbSumPCS.Text = string.Format("PCS : {0}", tempSumPCS.ToString("N0")).PadLeft(5, ' ');
+                        }
+
+                        if (tempSumKG > 99999)
+                        {
+                            lbSumKG.Text = "KG : " + ((tempSumKG / 1000).ToString() + "k").PadLeft(5, ' ');
+                        }
+                        else
+                        {
+                            lbSumKG.Text = string.Format("KG : {0}", tempSumKG.ToString("N3")).PadLeft(5, ' ');
                         }
                     }
                 }
@@ -499,11 +632,28 @@ namespace Denso_HHT
                     if (tempSumRec > 99999)
                     {
                         lbSumRec.Text = "REC : " + ((tempSumRec / 1000).ToString() + "k").PadLeft(5, ' ');                            
-                        //lbSumRec.Text = "REC : 99,999+";
                     }
                     else
                     {
-                        lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0").PadLeft(5, ' '));
+                        lbSumRec.Text = string.Format("REC : {0}", tempSumRec.ToString("N0")).PadLeft(5, ' ');
+                    }
+
+                    if (tempSumPCS > 99999)
+                    {
+                        lbSumPCS.Text = "PCS : " + ((tempSumPCS / 1000).ToString() + "k").PadLeft(5, ' ');
+                    }
+                    else
+                    {
+                        lbSumPCS.Text = string.Format("PCS : {0}", tempSumPCS.ToString("N0")).PadLeft(5, ' ');
+                    }
+
+                    if (tempSumKG > 99999)
+                    {
+                        lbSumKG.Text = "KG : " + ((tempSumKG / 1000).ToString() + "k").PadLeft(5, ' ');
+                    }
+                    else
+                    {
+                        lbSumKG.Text = string.Format("KG : {0}", tempSumKG.ToString("N3")).PadLeft(5, ' ');
                     }
                 }
             }
@@ -511,7 +661,7 @@ namespace Denso_HHT
 
         private void PrepareToNextScan()
         {
-            switch (scanFreshFoodMode)
+            switch (this.scanFreshFoodMode)
             {
                 case ScanFreshFoodMode.ScanOnly:
                     tbLocation.Text = currentLocation;
@@ -768,10 +918,13 @@ namespace Denso_HHT
                     newQuantity = Math.Round(Convert.ToDecimal(Convert.ToDecimal(tbQuantity.Text).ToString("F3")));
                 }
 
+                FreshfoodSaving.OpenSaving();               
+                Thread.Sleep(100);
+                
                 if (!Program.isNonRealtime)
                 {
                     APIModule.Instance.SendRequestThread(scannedItemData[passCursor - 1],
-                        newQuantity, Convert.ToInt32(ddlUnit.SelectedValue), 3);
+                        newQuantity, Convert.ToInt32(ddlUnit.SelectedValue), (int)(this.scanFreshFoodMode));
                     scannedItemData[passCursor - 1].Quantity = Convert.ToDecimal(Convert.ToDecimal(tbQuantity.Text).ToString("F3"));
                     scannedItemData[passCursor - 1].UnitCode = Convert.ToInt32(ddlUnit.SelectedValue);
                     UpdateSummaryQty(oldQuantity, scannedItemData[passCursor - 1].Quantity, oldUnitCode, Convert.ToInt32(ddlUnit.SelectedValue));
@@ -780,14 +933,16 @@ namespace Denso_HHT
                 else
                 {
                     DatabaseModule.Instance.QueryUpdateFromScan(scannedItemData[passCursor - 1].StocktakingID,
-                        newQuantity, Convert.ToInt32(ddlUnit.SelectedValue), false, 3);
+                        newQuantity, Convert.ToInt32(ddlUnit.SelectedValue), false, (int)(this.scanFreshFoodMode));
                     scannedItemData[passCursor - 1].Quantity = Convert.ToDecimal(Convert.ToDecimal(tbQuantity.Text).ToString("F3"));
                     scannedItemData[passCursor - 1].UnitCode = Convert.ToInt32(ddlUnit.SelectedValue);
                     UpdateSummaryQty(oldQuantity, scannedItemData[passCursor - 1].Quantity, oldUnitCode, Convert.ToInt32(ddlUnit.SelectedValue));
                 }
+                FreshfoodSaving.CloseSaving();
             }
             catch (Exception ex)
             {
+                FreshfoodSaving.CloseSaving();
                 MessageBox.Show("Update Error : " + ex.Message, "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
             }
@@ -805,6 +960,7 @@ namespace Denso_HHT
             {
                 MessageBox.Show("Invalid Location Code", "Warning", MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                tbLocation.Text = "";
                 return false;
             }
             //else if (tbBarcode.Text.Length != 5 && tbBarcode.Text.Length != 13
@@ -859,14 +1015,19 @@ namespace Denso_HHT
                     itemData.Quantity = Math.Round(Convert.ToDecimal(Convert.ToDecimal(tbQuantity.Text).ToString("F3")));
                 }
 
-                itemData.ScanMode = tempLocationModel.ScanMode;
+                itemData.ScanMode = (int)(this.scanFreshFoodMode);
                 itemData.SKUCode = tempSKUModel.SKUCode;
                 itemData.SKUMode = isHaveSKUData;
                 itemData.DepartmentCode = tempSKUModel.DepartmentCode;
+                itemData.SerialNumber = null;
+                itemData.ConversionCounter = null;
+
+                FreshfoodSaving.OpenSaving();
+                Thread.Sleep(100);
 
                 if (!Program.isNonRealtime)
                 {
-                    APIModule.Instance.SendRequestThread(itemData, 3);
+                    APIModule.Instance.SendRequestThread(itemData, (int)(this.scanFreshFoodMode));
                     scannedItemData.Add(itemData);
 
                     if (scannedItemData.Count == 101)
@@ -883,7 +1044,7 @@ namespace Denso_HHT
                     itemData.SendFlag = false;
 
                     StockTakingModel lastInsertedStocktaking = DatabaseModule.Instance.GetLastInsertedStocktaking();
-                    if (lastInsertedStocktaking != null && DatabaseModule.Instance.QueryUpdateLastStocktaking(lastInsertedStocktaking, itemData, 3))
+                    if (lastInsertedStocktaking != null && DatabaseModule.Instance.QueryUpdateLastStocktaking(lastInsertedStocktaking, itemData, (int)(this.scanFreshFoodMode)))
                     {
                         scannedItemData[scannedItemData.Count - 1].Quantity = lastInsertedStocktaking.Quantity + itemData.Quantity;
                         currentCursor--;
@@ -891,7 +1052,7 @@ namespace Denso_HHT
                     }
                     else
                     {
-                        DatabaseModule.Instance.QueryInsertFromScan(itemData, 3);
+                        DatabaseModule.Instance.QueryInsertFromScan(itemData, (int)(this.scanFreshFoodMode));
                         scannedItemData.Add(itemData);
 
                         if (scannedItemData.Count == 101)
@@ -913,15 +1074,21 @@ namespace Denso_HHT
                     //}
 
                 }
+
+                FreshfoodSaving.CloseSaving();
             }
             catch (InvalidCastException ex)
             {
+
+                FreshfoodSaving.CloseSaving();
                 MessageBox.Show("The application encountered some problem about network, please try again.", "Error", MessageBoxButtons.OK,
                         MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
                 throw ex;
             }
             catch (Exception ex)
             {
+                FreshfoodSaving.CloseSaving();
+                
                 MessageBox.Show("Insert Error : " + ex.Message, "Error", MessageBoxButtons.OK,
                         MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
                 throw ex;
@@ -937,7 +1104,7 @@ namespace Denso_HHT
                 return;
             }
 
-            DatabaseModule.Instance.QueryDeleteFromScan(scannedItemData[currentCursor - 1].StocktakingID, 3);
+            DatabaseModule.Instance.QueryDeleteFromScan(scannedItemData[currentCursor - 1].StocktakingID, (int)(this.scanFreshFoodMode));
             UpdateSummaryQty(scannedItemData[currentCursor - 1].Quantity, scannedItemData[currentCursor - 1].UnitCode, 2);
             scannedItemData.RemoveAt(currentCursor - 1);
 
@@ -953,21 +1120,33 @@ namespace Denso_HHT
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            if (this.btnNext.Text.Equals("Save"))
+            if (tbLocation.Text.Equals("") || tbBarcode.Text.Equals("") || tbQuantity.Text.Equals(""))
             {
-                blockScannerPortState = true;
-                Program.LastScannedBarcodeFreshFood = "";
-                this.scanner.PortOpen = false;
-                btnNext_ClickAction();
-                if (!this.scanner.PortOpen)
-                {
-                    this.scanner.PortOpen = true;
-                }
-                blockScannerPortState = false;
+                MessageBox.Show("Location, Barcode and Quantity must not empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button1);
+                FocusOnSuitableTextBox();
             }
             else
             {
-                btnNext_ClickAction();
+                if (this.btnNext.Text.Equals("Save"))
+                {
+                    if (tbBarcode.Text.Length != 5)
+                    { ddlUnit.SelectedIndex = 0; }
+                    
+                    blockScannerPortState = true;
+                    Program.LastScannedBarcodeFreshFood = "";
+                    this.scanner.PortOpen = false;
+                    btnNext_ClickAction();
+                    if (!this.scanner.PortOpen)
+                    {
+                        try { this.scanner.PortOpen = true; }
+                        catch { }
+                    }
+                    blockScannerPortState = false;
+                }
+                else
+                {
+                    btnNext_ClickAction();
+                }
             }
         }
 
@@ -983,6 +1162,7 @@ namespace Denso_HHT
                     if (!CheckForAdd())
                     {
                         currentCursor--;
+                        isGoingAction = false;
                     }
                     else
                     {
@@ -995,18 +1175,8 @@ namespace Denso_HHT
                         }
                         else if (tempSKUModel.IsNew)
                         {
-                            DialogResult result = MessageBox.Show("Barcode not found in [SKUMaster], do you want to save it?",
-                                "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-                            if (result != DialogResult.Yes)
-                            {
-                                currentCursor--;
-                                isGoingAction = false;
-                            }
-                            else
-                            {
-                                tempSKUModel.Flag = "F";
-                                AddAuditData();
-                            }
+                            tempSKUModel.Flag = "F";
+                            AddAuditData();
                         }
                         else
                         {
@@ -1019,18 +1189,8 @@ namespace Denso_HHT
                                 }
                                 else
                                 {
-                                    DialogResult result = MessageBox.Show("This Barcode is not the same BrandCode on your current Location, do you want to save it?",
-                                        "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-                                    if (result != DialogResult.Yes)
-                                    {
-                                        currentCursor--;
-                                        isGoingAction = false;
-                                    }
-                                    else
-                                    {
-                                        tempSKUModel.Flag = "F";
-                                        AddAuditData();
-                                    }
+                                    tempSKUModel.Flag = "F";
+                                    AddAuditData();
                                 }
                             }
                             else
@@ -1103,6 +1263,10 @@ namespace Denso_HHT
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(tbLocation.Text) && !string.IsNullOrEmpty(tbBarcode.Text) && !string.IsNullOrEmpty(tbQuantity.Text))
+            {
+                btnNext_ClickAction();
+            }
             ClearScreen();
             FocusOnSuitableTextBox();
         }
@@ -1115,6 +1279,14 @@ namespace Denso_HHT
 
         private void btnMainMenu_Click(object sender, EventArgs e)
         {
+            if(!string.IsNullOrEmpty(tbLocation.Text) && !string.IsNullOrEmpty(tbBarcode.Text) && !string.IsNullOrEmpty(tbQuantity.Text))
+            {
+                if (tbBarcode.Text.Length != 5)
+                { ddlUnit.SelectedIndex = 0; }
+                
+                btnNext_ClickAction();
+                Program.LastScannedBarcodeFreshFood = "";
+            }
             this.DialogResult = DialogResult.Abort;
             this.Dispose();
         }
@@ -1252,7 +1424,7 @@ namespace Denso_HHT
                         tbQuantity.Enabled = false;
                         tbQuantity.BackColor = Color.FromArgb(223, 223, 223);
                     }
-                    else
+                    else if (scanFreshFoodMode == ScanFreshFoodMode.ScanQty)
                     {
                         tbQuantity.Text = "";
                         tbQuantity.Enabled = true;
@@ -1260,7 +1432,7 @@ namespace Denso_HHT
                     }
                     break;
             }
-            UpdateSummaryQty(0, 0, 0);
+            //UpdateSummaryQty(0, 0, 0);
         }
 
         private void tbLocation_GotFocus(object sender, EventArgs e)
@@ -1269,7 +1441,8 @@ namespace Denso_HHT
             {
                 if (!scanner.PortOpen)
                 {
-                    scanner.PortOpen = true;
+                    try { this.scanner.PortOpen = true; }
+                    catch { }
                 }
             }
         }
@@ -1278,7 +1451,8 @@ namespace Denso_HHT
         {
             if (this.scanner != null && !blockScannerPortState)
             {
-                this.scanner.PortOpen = false;
+                try { this.scanner.PortOpen = false; }
+                catch { }
             }
         }
 
@@ -1288,7 +1462,8 @@ namespace Denso_HHT
             {
                 if (!scanner.PortOpen)
                 {
-                    scanner.PortOpen = true;
+                    try { this.scanner.PortOpen = true; }
+                    catch { }
                 }
             }
         }
@@ -1297,7 +1472,8 @@ namespace Denso_HHT
         {
             if (this.scanner != null && !blockScannerPortState)
             {
-                this.scanner.PortOpen = false;
+                try { this.scanner.PortOpen = false; }
+                catch { }
             }
         }
 
@@ -1310,6 +1486,8 @@ namespace Denso_HHT
             else
             {
                 lbSumRec.Text = "REC : ";
+                lbSumPCS.Text = "PCS : ";
+                lbSumKG.Text = "KG : ";
             }
         }
 
@@ -1318,7 +1496,14 @@ namespace Denso_HHT
             switch (e.KeyCode)
             {
                 case System.Windows.Forms.Keys.Enter:
-                    if (tbLocation.Text.Equals("") || tbBarcode.Text.Equals("") || tbQuantity.Text.Equals(""))
+
+                    if (tbLocation.Text.Length != 5)
+                    {
+                        MessageBox.Show("Location Code must be 5 digits", "Warning", MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        tbLocation.Text = "";
+                    }
+                    else if (tbLocation.Text.Equals("") || tbBarcode.Text.Equals("") || tbQuantity.Text.Equals(""))
                     {
                         FocusOnSuitableTextBox();
                     }
@@ -1326,13 +1511,17 @@ namespace Denso_HHT
                     {
                         if (this.btnNext.Text.Equals("Save"))
                         {
+                            if (tbBarcode.Text.Length != 5)
+                            { ddlUnit.SelectedIndex = 0; }
+
                             blockScannerPortState = true;
                             Program.LastScannedBarcodeFreshFood = "";
                             this.scanner.PortOpen = false;
                             btnNext_ClickAction();
                             if (!this.scanner.PortOpen)
                             {
-                                this.scanner.PortOpen = true;
+                                try { this.scanner.PortOpen = true; }
+                                catch { }
                             }
                             blockScannerPortState = false;
                         }
@@ -1350,6 +1539,7 @@ namespace Denso_HHT
                         }
                     }
                     break;
+
                 case DNWA.BHTCL.Keys.M1:
                     btnMainMenu_Click(null, null);
                     break;
@@ -1404,7 +1594,8 @@ namespace Denso_HHT
         {
             if (this.scanner != null && !this.scanner.PortOpen)
             {
-                this.scanner.PortOpen = true;
+                try { this.scanner.PortOpen = true; }
+                catch { }
             }
         }
 
@@ -1412,7 +1603,8 @@ namespace Denso_HHT
         {
             if (this.scanner != null)
             {
-                this.scanner.PortOpen = false;
+                try { this.scanner.PortOpen = false; }
+                catch { }
             }
         }
 
@@ -1422,9 +1614,9 @@ namespace Denso_HHT
         }
     }
 
-    public enum ScanFreshFoodMode
+    public enum ScanFreshFoodMode : int
     {
-        ScanOnly, ScanQty, ScanWeight
+        ScanOnly = 5, ScanQty = 6, ScanWeight = 7
     }
 
 }

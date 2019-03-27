@@ -30,10 +30,10 @@
         {
             this.btnExit = new System.Windows.Forms.Button();
             this.constMenu = new System.Windows.Forms.Label();
-            this.hhtToolBar1 = new Denso_HHT.HHTToolBar();
             this.btnAll = new System.Windows.Forms.Button();
             this.btnOnlyNew = new System.Windows.Forms.Button();
             this.btnReceiveData = new System.Windows.Forms.Button();
+            this.hhtToolBar1 = new Denso_HHT.HHTToolBar();
             this.SuspendLayout();
             // 
             // btnExit
@@ -42,7 +42,7 @@
             this.btnExit.Location = new System.Drawing.Point(0, 280);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(240, 40);
-            this.btnExit.TabIndex = 24;
+            this.btnExit.TabIndex = 4;
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -54,6 +54,36 @@
             this.constMenu.Size = new System.Drawing.Size(134, 35);
             this.constMenu.Text = "Syncing Data Menu";
             // 
+            // btnAll
+            // 
+            this.btnAll.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
+            this.btnAll.Location = new System.Drawing.Point(40, 130);
+            this.btnAll.Name = "btnAll";
+            this.btnAll.Size = new System.Drawing.Size(160, 40);
+            this.btnAll.TabIndex = 2;
+            this.btnAll.Text = "All";
+            this.btnAll.Click += new System.EventHandler(this.btnAll_Click);
+            // 
+            // btnOnlyNew
+            // 
+            this.btnOnlyNew.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
+            this.btnOnlyNew.Location = new System.Drawing.Point(40, 50);
+            this.btnOnlyNew.Name = "btnOnlyNew";
+            this.btnOnlyNew.Size = new System.Drawing.Size(160, 40);
+            this.btnOnlyNew.TabIndex = 1;
+            this.btnOnlyNew.Text = "Only New";
+            this.btnOnlyNew.Click += new System.EventHandler(this.btnOnlyNew_Click);
+            // 
+            // btnReceiveData
+            // 
+            this.btnReceiveData.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
+            this.btnReceiveData.Location = new System.Drawing.Point(40, 211);
+            this.btnReceiveData.Name = "btnReceiveData";
+            this.btnReceiveData.Size = new System.Drawing.Size(160, 40);
+            this.btnReceiveData.TabIndex = 3;
+            this.btnReceiveData.Text = "Receive Data";
+            this.btnReceiveData.Click += new System.EventHandler(this.btnReceiveData_Click);
+            // 
             // hhtToolBar1
             // 
             this.hhtToolBar1.Location = new System.Drawing.Point(140, 0);
@@ -61,36 +91,6 @@
             this.hhtToolBar1.Size = new System.Drawing.Size(100, 20);
             this.hhtToolBar1.TabIndex = 100;
             this.hhtToolBar1.TabStop = false;
-            // 
-            // btnAll
-            // 
-            this.btnAll.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnAll.Location = new System.Drawing.Point(40, 130);
-            this.btnAll.Name = "btnAll";
-            this.btnAll.Size = new System.Drawing.Size(160, 40);
-            this.btnAll.TabIndex = 22;
-            this.btnAll.Text = "All";
-            this.btnAll.Click += new System.EventHandler(this.btnAll_Click);
-            // 
-            // btnOnlyNew
-            // 
-            this.btnOnlyNew.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnOnlyNew.Location = new System.Drawing.Point(40, 210);
-            this.btnOnlyNew.Name = "btnOnlyNew";
-            this.btnOnlyNew.Size = new System.Drawing.Size(160, 40);
-            this.btnOnlyNew.TabIndex = 23;
-            this.btnOnlyNew.Text = "Only New";
-            this.btnOnlyNew.Click += new System.EventHandler(this.btnOnlyNew_Click);
-            // 
-            // btnReceiveData
-            // 
-            this.btnReceiveData.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Regular);
-            this.btnReceiveData.Location = new System.Drawing.Point(40, 50);
-            this.btnReceiveData.Name = "btnReceiveData";
-            this.btnReceiveData.Size = new System.Drawing.Size(160, 40);
-            this.btnReceiveData.TabIndex = 21;
-            this.btnReceiveData.Text = "Receive Data";
-            this.btnReceiveData.Click += new System.EventHandler(this.btnReceiveData_Click);
             // 
             // SendAndReceiveDataMenu
             // 
